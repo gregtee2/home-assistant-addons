@@ -6,9 +6,14 @@ Visual node-based smart home automation editor that runs as a Home Assistant add
 
 - 🎨 **Visual Node Editor** - Drag-and-drop automation building with Rete.js
 - 🏠 **Native HA Integration** - Direct access to all Home Assistant entities
-- 💡 **Multi-Platform** - Control Philips Hue, TP-Link Kasa, Shelly devices
+- 💡 **Multi-Platform Device Support:**
+  - Home Assistant (all entities)
+  - Philips Hue (direct bridge API)
+  - TP-Link Kasa (direct local API)
+  - Shelly (via Home Assistant)
 - ⚡ **Real-time** - Socket.IO for instant device state updates
 - 🔌 **Plugin System** - Extensible with custom nodes
+- 🔄 **Hot Plugin Updates** - Update plugins without rebuilding
 
 ## Installation
 
