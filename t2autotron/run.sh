@@ -5,9 +5,14 @@ echo "=========================================="
 echo "  T2AutoTron Home Assistant Add-on"
 echo "=========================================="
 
-# Read options from Home Assistant
+# Read options from Home Assistant (with fallback for local testing)
 CONFIG_PATH=/data/options.json
-LOG_LEVEL=$(jq -r '.log_level // "info"' $CONFIG_PATH)
+if [ -f "$CONFIG_PATH" ]; then
+    LOG_LEVEL=$(jq -r '.log_level // "info"' $CONFIG_PATH)
+else
+    echo "Note: Running without Home Assistant options file (local testing mode)"
+    LOG_LEVEL="${LOG_LEVEL:-info}"
+fi
 
 echo "Log level: $LOG_LEVEL"
 

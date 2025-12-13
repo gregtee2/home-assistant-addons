@@ -15,9 +15,9 @@ WORKDIR /build/v3_migration/frontend
 RUN npm install
 RUN npm run build
 
-# Install backend dependencies
+# Install backend dependencies (skip postinstall which needs electron-builder)
 WORKDIR /build/v3_migration/backend
-RUN npm install --production
+RUN npm install --production --ignore-scripts
 
 # Production stage
 FROM node:20-alpine
