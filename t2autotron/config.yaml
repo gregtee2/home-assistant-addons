@@ -1,0 +1,25 @@
+name: "T2AutoTron"
+description: "Visual node-based smart home automation editor with real-time device control"
+version: "2.1.0"
+slug: "t2autotron"
+url: "https://github.com/gregtee2/T2AutoTron"
+arch:
+  - amd64
+  - aarch64
+  - armv7
+init: false
+homeassistant_api: true
+hassio_api: true
+ingress: true
+ingress_port: 3000
+panel_icon: "mdi:chip"
+panel_title: "T2AutoTron"
+ports:
+  3000/tcp: 3000
+ports_description:
+  3000/tcp: "Web interface"
+options:
+  log_level: info
+schema:
+  log_level: list(debug|info|warning|error)
+image: "ghcr.io/gregtee2/t2autotron-{arch}"
