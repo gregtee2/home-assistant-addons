@@ -22,4 +22,3 @@ options:
   log_level: info
 schema:
   log_level: list(debug|info|warning|error)
-image: "ghcr.io/gregtee2/t2autotron-{arch}"
