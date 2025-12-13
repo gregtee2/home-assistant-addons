@@ -96,7 +96,7 @@ Control light colors with visual color pickers.
 2. Add an **HA Generic Device** node
 3. Select your lights in the device node
 4. Connect `trigger_off` (sunset) → `trigger` input
-5. Click **▶ Run** in the Control Panel
+5. Done! The automation runs automatically when sunset occurs
 
 **Example: Color lights based on time of day**
 
@@ -104,7 +104,7 @@ Control light colors with visual color pickers.
 2. Add an **HA Generic Device** node with lights
 3. Connect `hsv_info` output → `hsv_info` input
 4. Configure colors for different times of day
-5. Click **▶ Run**
+5. Done! Colors update automatically as time progresses
 
 ### Node Categories
 
