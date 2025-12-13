@@ -12,12 +12,12 @@ RUN git clone --depth 1 --branch ${T2AUTOTRON_VERSION} https://github.com/gregte
 
 # Build frontend
 WORKDIR /build/v3_migration/frontend
-RUN npm ci
+RUN npm install
 RUN npm run build
 
 # Install backend dependencies
 WORKDIR /build/v3_migration/backend
-RUN npm ci --production
+RUN npm install --production
 
 # Production stage
 FROM node:20-alpine
