@@ -1,6 +1,6 @@
 name: "T2AutoTron"
 description: "Visual node-based smart home automation editor with real-time device control"
-version: "2.1.8"
+version: "2.1.9"
 slug: "t2autotron"
 url: "https://github.com/gregtee2/T2AutoTron"
 arch:
@@ -20,5 +20,19 @@ ports_description:
   3000/tcp: "Web interface"
 options:
   log_level: info
+  openweathermap_api_key: ""
+  ambientweather_api_key: ""
+  ambientweather_app_key: ""
+  telegram_bot_token: ""
+  telegram_chat_id: ""
+  hue_bridge_ip: ""
+  hue_username: ""
 schema:
   log_level: list(debug|info|warning|error)
+  openweathermap_api_key: str?
+  ambientweather_api_key: str?
+  ambientweather_app_key: str?
+  telegram_bot_token: str?
+  telegram_chat_id: str?
+  hue_bridge_ip: str?
+  hue_username: str?

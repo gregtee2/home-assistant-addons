@@ -9,6 +9,15 @@ echo "=========================================="
 CONFIG_PATH=/data/options.json
 if [ -f "$CONFIG_PATH" ]; then
     LOG_LEVEL=$(jq -r '.log_level // "info"' $CONFIG_PATH)
+    
+    # Read API keys from add-on configuration
+    OPENWEATHERMAP_API_KEY=$(jq -r '.openweathermap_api_key // ""' $CONFIG_PATH)
+    AMBIENTWEATHER_API_KEY=$(jq -r '.ambientweather_api_key // ""' $CONFIG_PATH)
+    AMBIENTWEATHER_APP_KEY=$(jq -r '.ambientweather_app_key // ""' $CONFIG_PATH)
+    TELEGRAM_BOT_TOKEN=$(jq -r '.telegram_bot_token // ""' $CONFIG_PATH)
+    TELEGRAM_CHAT_ID=$(jq -r '.telegram_chat_id // ""' $CONFIG_PATH)
+    HUE_BRIDGE_IP=$(jq -r '.hue_bridge_ip // ""' $CONFIG_PATH)
+    HUE_USERNAME=$(jq -r '.hue_username // ""' $CONFIG_PATH)
 else
     echo "Note: Running without Home Assistant options file (local testing mode)"
     LOG_LEVEL="${LOG_LEVEL:-info}"
@@ -36,6 +45,15 @@ export HA_HOST
 export HA_TOKEN
 export NODE_ENV=production
 export VERBOSE_LOGGING=$([ "$LOG_LEVEL" = "debug" ] && echo "true" || echo "false")
+
+# Export API keys (only if not empty)
+[ -n "$OPENWEATHERMAP_API_KEY" ] && export OPENWEATHERMAP_API_KEY
+[ -n "$AMBIENTWEATHER_API_KEY" ] && export AMBIENTWEATHER_API_KEY
+[ -n "$AMBIENTWEATHER_APP_KEY" ] && export AMBIENTWEATHER_APP_KEY
+[ -n "$TELEGRAM_BOT_TOKEN" ] && export TELEGRAM_BOT_TOKEN
+[ -n "$TELEGRAM_CHAT_ID" ] && export TELEGRAM_CHAT_ID
+[ -n "$HUE_BRIDGE_IP" ] && export HUE_BRIDGE_IP
+[ -n "$HUE_USERNAME" ] && export HUE_USERNAME
 
 # Create data directory for persistent storage
 mkdir -p /data/graphs
