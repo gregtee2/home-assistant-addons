@@ -39,6 +39,19 @@ When you open T2AutoTron, you'll see:
 
 **Right-click** on the canvas to open the node menu and add nodes.
 
+### How Nodes Work
+
+T2AutoTron is designed around **connecting nodes via sockets** (the colored circles on nodes):
+
+- **Input sockets** (left side) → **Drive the node's behavior.** This is how you control the node.
+- **Output sockets** (right side) → **Optional.** Use these to chain automations or monitor state.
+
+**The key insight:** While nodes have built-in controls (buttons, sliders), the real power comes from connecting inputs to other nodes. For example:
+- Connect a **Sunrise/Sunset** node's output → **Device** node's trigger input
+- Connect a **Timeline Color** node's output → **Device** node's HSV input
+
+This creates automations that run continuously without manual interaction.
+
 ### Essential Nodes
 
 #### 🏠 HA Generic Device Node
@@ -47,20 +60,23 @@ When you open T2AutoTron, you'll see:
 1. Right-click → **Home Assistant** → **HA Generic Device**
 2. Click **+ Add Device** to add devices
 3. Select devices from the dropdown (auto-populated from HA)
-4. Use the built-in controls or connect inputs
+4. **Connect input sockets** to automate, or use built-in controls for manual testing
 
-**Inputs:**
+**Input Sockets (left side - how you control the node):**
 - `trigger` → Turn devices on (true) or off (false)
 - `hsv_info` → Control light color `{ hue: 0-1, saturation: 0-1, brightness: 0-254 }`
+
+**Output Sockets (right side - optional, for chaining):**
+- `state` → Current on/off state (use to trigger other nodes based on this device)
 
 #### ⏰ Sunrise/Sunset Node
 Automatically triggers based on sun position at your location.
 
 1. Right-click → **Timer/Event** → **Sunrise/Sunset**
 2. Location auto-detects from Home Assistant
-3. Connect outputs to device triggers
+3. **Connect outputs** to device trigger inputs
 
-**Outputs:**
+**Output Sockets:**
 - `is_daytime` → true during day, false at night
 - `trigger_on` → Pulses true at sunrise
 - `trigger_off` → Pulses true at sunset
@@ -69,7 +85,7 @@ Automatically triggers based on sun position at your location.
 Control light colors with visual color pickers.
 
 - **HSV Control** - Manual color picker with sliders
-- **Timeline Color** - Schedule colors throughout the day
+- **Timeline Color** - Schedule colors throughout the day (connect `hsv_info` output → device `hsv_info` input)
 - **Spline Curve** - Create smooth color transitions
 
 ### Your First Automation
