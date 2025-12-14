@@ -7,7 +7,7 @@ RUN apk add --no-cache git
 WORKDIR /build
 
 # Clone the main T2AutoTron repository
-# CACHE_BUST: 2025-12-14-18-30-v5
+# CACHE_BUST: 2025-12-14-v43-ingress-fix
 ARG T2AUTOTRON_VERSION=stable
 RUN git clone --depth 1 --branch ${T2AUTOTRON_VERSION} https://github.com/gregtee2/T2AutoTron.git .
 
@@ -46,6 +46,6 @@ LABEL \
     io.hass.name="T2AutoTron" \
     io.hass.description="Visual node-based smart home automation editor" \
     io.hass.type="addon" \
-    io.hass.version="2.1.42"
+    io.hass.version="2.1.43"
 
 CMD ["/run.sh"]
