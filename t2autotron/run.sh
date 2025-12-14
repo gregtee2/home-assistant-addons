@@ -28,6 +28,7 @@ echo "Log level: $LOG_LEVEL"
 # Get Home Assistant details from Supervisor API
 if [ -n "$SUPERVISOR_TOKEN" ]; then
     echo "Fetching Home Assistant configuration from Supervisor..."
+    echo "[Add-on] SUPERVISOR_TOKEN detected - update notifications disabled"
     
     # Get HA URL (internal)
     HA_HOST="http://supervisor/core"
