@@ -8,7 +8,7 @@ WORKDIR /build
 
 # Clone the main T2AutoTron repository (cache bust with date)
 ARG T2AUTOTRON_VERSION=stable
-ARG CACHE_DATE=2025-12-14-v3
+ARG CACHE_DATE=2025-12-14-v4
 RUN git clone --depth 1 --branch ${T2AUTOTRON_VERSION} https://github.com/gregtee2/T2AutoTron.git .
 
 # Build frontend
@@ -42,10 +42,10 @@ RUN chmod a+x /run.sh
 EXPOSE 3000
 
 # Labels for Home Assistant
-LABEL \\
-    io.hass.name="T2AutoTron" \\
-    io.hass.description="Visual node-based smart home automation editor" \\
-    io.hass.type="addon" \\
-    io.hass.version="2.1.40"
+LABEL \
+    io.hass.name="T2AutoTron" \
+    io.hass.description="Visual node-based smart home automation editor" \
+    io.hass.type="addon" \
+    io.hass.version="2.1.41"
 
 CMD ["/run.sh"]
