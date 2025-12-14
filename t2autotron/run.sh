@@ -59,6 +59,9 @@ export VERBOSE_LOGGING=$([ "$LOG_LEVEL" = "debug" ] && echo "true" || echo "fals
 mkdir -p /data/graphs
 export GRAPH_SAVE_PATH=/data/graphs
 
+# Enable auto-start of backend engine
+export ENGINE_AUTOSTART=true
+
 # Load settings from T2AutoTron Settings UI (persisted to /data/.env)
 # These override the add-on config options if set
 if [ -f /data/.env ]; then
