@@ -8,7 +8,7 @@ WORKDIR /build
 
 # Clone the main T2AutoTron repository (cache bust with date)
 ARG T2AUTOTRON_VERSION=stable
-ARG CACHE_DATE=2025-12-14i
+ARG CACHE_DATE=2025-12-14j
 RUN git clone --depth 1 --branch ${T2AUTOTRON_VERSION} https://github.com/gregtee2/T2AutoTron.git .
 
 # Build frontend
