@@ -7,9 +7,11 @@ RUN apk add --no-cache git
 WORKDIR /build
 
 # Clone the main T2AutoTron repository
-# CACHE_BUST: 2025-12-14-v43-ingress-fix
+# ARG before RUN forces cache invalidation when version changes
 ARG T2AUTOTRON_VERSION=stable
-RUN git clone --depth 1 --branch ${T2AUTOTRON_VERSION} https://github.com/gregtee2/T2AutoTron.git .
+ARG BUILD_VERSION=2.1.44
+RUN echo "Building version ${BUILD_VERSION}" && \
+    git clone --depth 1 --branch ${T2AUTOTRON_VERSION} https://github.com/gregtee2/T2AutoTron.git .
 
 # Build frontend
 WORKDIR /build/v3_migration/frontend
@@ -46,6 +48,6 @@ LABEL \
     io.hass.name="T2AutoTron" \
     io.hass.description="Visual node-based smart home automation editor" \
     io.hass.type="addon" \
-    io.hass.version="2.1.43"
+    io.hass.version="2.1.44"
 
 CMD ["/run.sh"]
