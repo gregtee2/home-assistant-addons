@@ -9,7 +9,7 @@ WORKDIR /build
 # Clone the main T2AutoTron repository
 # ARG before RUN forces cache invalidation when version changes
 ARG T2AUTOTRON_VERSION=stable
-ARG BUILD_VERSION=2.1.44
+ARG BUILD_VERSION=2.1.45
 RUN echo "Building version ${BUILD_VERSION}" && \
     git clone --depth 1 --branch ${T2AUTOTRON_VERSION} https://github.com/gregtee2/T2AutoTron.git .
 
