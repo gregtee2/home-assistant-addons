@@ -8,7 +8,7 @@ WORKDIR /build
 
 # Clone the main T2AutoTron repository (cache bust with date)
 ARG T2AUTOTRON_VERSION=stable
-ARG CACHE_DATE=2025-12-13k
+ARG CACHE_DATE=2025-12-14a
 RUN git clone --depth 1 --branch ${T2AUTOTRON_VERSION} https://github.com/gregtee2/T2AutoTron.git .
 
 # Build frontend
@@ -46,6 +46,6 @@ LABEL \
     io.hass.name="T2AutoTron" \
     io.hass.description="Visual node-based smart home automation editor" \
     io.hass.type="addon" \
-    io.hass.version="2.1.20"
+    io.hass.version="2.1.24"
 
 CMD ["/run.sh"]
