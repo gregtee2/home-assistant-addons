@@ -48,6 +48,6 @@ LABEL \
     io.hass.name="T2AutoTron" \
     io.hass.description="Visual node-based smart home automation editor" \
     io.hass.type="addon" \
-    io.hass.version="2.1.55"
+    io.hass.version="2.1.56"
 
 CMD ["/run.sh"]

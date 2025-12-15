@@ -58,6 +58,7 @@ export VERBOSE_LOGGING=$([ "$LOG_LEVEL" = "debug" ] && echo "true" || echo "fals
 
 # Create data directory for persistent storage
 mkdir -p /data/graphs
+mkdir -p /data/crashes
 export GRAPH_SAVE_PATH=/data/graphs
 
 # Enable auto-start of backend engine
