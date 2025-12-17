@@ -4,6 +4,28 @@ Visual node-based smart home automation editor with a **24/7 backend engine** - 
 
 ![T2AutoTron Editor](https://raw.githubusercontent.com/gregtee2/T2AutoTron/stable/screenshots/Main_Canvas.png)
 
+## 🤔 Why T2AutoTron?
+
+Back in 2003, I got into home automation. Every app I found was menu-driven - you'd click through screens to set up rules, but you couldn't *see* the logic flow. As a visual effects artist running **Nuke** (a node-based compositing tool), I kept thinking: *"Why can't I just connect device nodes, trigger nodes, and logic nodes together?"*
+
+Nothing like that existed, and I wasn't a programmer. Fast forward 20 years - LLMs changed everything. I could finally design the app I'd always wanted while AI handled the code.
+
+**T2AutoTron is that app.** A visual-first automation editor where you *see* your automations flow in real-time.
+
+### Not a Node-RED replacement - a visual alternative
+
+| | T2AutoTron | Node-RED |
+|-|-----------|----------|
+| **Philosophy** | See data flow live on nodes | Debug via text sidebar |
+| **Learning curve** | Lower - no msg.payload | Steeper |
+| **Color tools** | Built-in HSV, timelines | Manual setup |
+
+See the [full comparison](DOCS.md) in the Documentation tab.
+
+### Why share this?
+
+I'm sure there are others who'd appreciate a visual approach. But this is **beta software** - I need testers! Click the 🐛 **Report Bug** button in the app to help make it better.
+
 ## ✨ Features
 
 - 🎨 **Visual Node Editor** - Drag-and-drop automation building with Rete.js
