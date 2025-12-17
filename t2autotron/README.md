@@ -1,21 +1,24 @@
 # T2AutoTron Home Assistant Add-on
 
-Visual node-based smart home automation editor that runs as a Home Assistant add-on.
+Visual node-based smart home automation editor with a **24/7 backend engine** - your automations run even when you close the browser!
 
-## Features
+![T2AutoTron Editor](https://raw.githubusercontent.com/gregtee2/T2AutoTron/stable/screenshots/Main_Canvas.png)
+
+## ✨ Features
 
 - 🎨 **Visual Node Editor** - Drag-and-drop automation building with Rete.js
+- ⚡ **24/7 Backend Engine** - Automations run on the server, not in your browser
 - 🏠 **Native HA Integration** - Direct access to all Home Assistant entities
 - 💡 **Multi-Platform Device Support:**
   - Home Assistant (all entities)
-  - Philips Hue (direct bridge API)
-  - TP-Link Kasa (direct local API)
+  - Philips Hue (direct bridge API - no HA required)
+  - TP-Link Kasa (direct local API - no HA required)
   - Shelly (via Home Assistant)
-- ⚡ **Real-time** - Socket.IO for instant device state updates
-- 🔌 **Plugin System** - Extensible with custom nodes
-- 🔄 **Hot Plugin Updates** - Update plugins without rebuilding
+- 🔌 **50+ Node Types** - Time, logic, color, weather, and more
+- 🔄 **Hot Plugin Updates** - Add new nodes without rebuilding
+- 💾 **Auto-Save** - Never lose your work
 
-## Installation
+## 🚀 Installation
 
 1. Add this repository to Home Assistant:
    - Go to **Settings** → **Add-ons** → **Add-on Store**
@@ -24,139 +27,85 @@ Visual node-based smart home automation editor that runs as a Home Assistant add
 
 2. Find "T2AutoTron" in the add-on store and click **Install**
 
-3. Start the add-on and click **Open Web UI**
+3. Wait for the build to complete (5-10 minutes on Raspberry Pi)
 
-> **Note:** First build takes 5-10 minutes on Raspberry Pi as it compiles the frontend.
+4. Start the add-on and click **Open Web UI**
 
-## Quick Start Guide
+## 🎯 Quick Start
 
-### The Canvas
+1. **Right-click** on the canvas to add nodes
+2. Add an **HA Generic Device** node and select your devices
+3. Add a **Sunrise/Sunset** node
+4. Connect `trigger_off` → device's `trigger` input
+5. **Save** your graph - it now runs 24/7!
 
-When you open T2AutoTron, you'll see:
-- **Canvas** (center) - Where you build automations by connecting nodes
-- **Control Panel** (right) - Graph controls, connection status, settings
-- **Favorites Panel** (left) - Quick access to frequently-used nodes
+![Building Automations](https://raw.githubusercontent.com/gregtee2/T2AutoTron/stable/screenshots/Flow_Exmaple.png)
 
-**Right-click** on the canvas to open the node menu and add nodes.
-
-### How Nodes Work
-
-T2AutoTron is designed around **connecting nodes via sockets** (the colored circles on nodes):
-
-- **Input sockets** (left side) → **Drive the node's behavior.** This is how you control the node.
-- **Output sockets** (right side) → **Optional.** Use these to chain automations or monitor state.
-
-**The key insight:** While nodes have built-in controls (buttons, sliders), the real power comes from connecting inputs to other nodes. For example:
-- Connect a **Sunrise/Sunset** node's output → **Device** node's trigger input
-- Connect a **Timeline Color** node's output → **Device** node's HSV input
-
-This creates automations that run continuously without manual interaction.
-
-### Essential Nodes
-
-#### 🏠 HA Generic Device Node
-**The backbone of device control.** This single node can control ANY Home Assistant entity.
-
-1. Right-click → **Home Assistant** → **HA Generic Device**
-2. Click **+ Add Device** to add devices
-3. Select devices from the dropdown (auto-populated from HA)
-4. **Connect input sockets** to automate, or use built-in controls for manual testing
-
-**Input Sockets (left side - how you control the node):**
-- `trigger` → Turn devices on (true) or off (false)
-- `hsv_info` → Control light color `{ hue: 0-1, saturation: 0-1, brightness: 0-254 }`
-
-**Output Sockets (right side - optional, for chaining):**
-- `state` → Current on/off state (use to trigger other nodes based on this device)
-
-#### ⏰ Sunrise/Sunset Node
-Automatically triggers based on sun position at your location.
-
-1. Right-click → **Timer/Event** → **Sunrise/Sunset**
-2. Location auto-detects from Home Assistant
-3. **Connect outputs** to device trigger inputs
-
-**Output Sockets:**
-- `is_daytime` → true during day, false at night
-- `trigger_on` → Pulses true at sunrise
-- `trigger_off` → Pulses true at sunset
-
-#### 🎨 Color/HSV Nodes
-Control light colors with visual color pickers.
-
-- **HSV Control** - Manual color picker with sliders
-- **Timeline Color** - Schedule colors throughout the day (connect `hsv_info` output → device `hsv_info` input)
-- **Spline Curve** - Create smooth color transitions
-
-### Your First Automation
-
-**Example: Turn on lights at sunset**
-
-1. Add a **Sunrise/Sunset** node
-2. Add an **HA Generic Device** node
-3. Select your lights in the device node
-4. Connect `trigger_off` (sunset) → `trigger` input
-5. Done! The automation runs automatically when sunset occurs
-
-**Example: Color lights based on time of day**
-
-1. Add a **Timeline Color** node
-2. Add an **HA Generic Device** node with lights
-3. Connect `hsv_info` output → `hsv_info` input
-4. Configure colors for different times of day
-5. Done! Colors update automatically as time progresses
-
-### Node Categories
-
-| Category | Purpose |
-|----------|---------|
-| **Home Assistant** | Device control, state monitoring, automations |
-| **Timer/Event** | Schedules, delays, sunrise/sunset, debounce |
-| **Logic** | AND, OR, NOT, comparisons, conditions |
-| **Color** | HSV control, color mixing, timeline colors |
-| **Inputs** | Manual triggers, sliders, toggles |
-| **Utility** | Math, buffers, state machines |
-
-### Tips
-
-- **Save often** - Click 💾 Save in the Control Panel
-- **Use Favorites** - Drag nodes to the left panel for quick access
-- **Test incrementally** - Build and test small sections before connecting everything
-- **Check status** - The Control Panel shows connection status for HA, Hue, Kasa
-
-## Configuration
+## 🔧 Configuration
 
 | Option | Description | Default |
 |--------|-------------|---------|
 | `log_level` | Logging verbosity (debug, info, warning, error) | `info` |
 
-## Updating
+### Optional Integrations
 
-### Plugin Updates (Fast - No Rebuild)
-Click **🔌 Update Plugins** in the Control Panel to download latest plugin fixes.
+Configure in **Settings** within the app:
 
-### Full Updates (Rebuild Required)
-For major updates, rebuild the add-on from the Add-on page.
+| Integration | Purpose | Required? |
+|-------------|---------|-----------|
+| **Philips Hue** | Direct bridge control (no HA) | Optional |
+| **Ambient Weather** | Personal weather station data | Optional |
+| **Telegram** | Notification alerts | Optional |
 
-## Saved Graphs
+## 🌤️ Weather Support
 
-Your automation graphs are saved in `/data/graphs` which persists across add-on updates.
+- **Open-Meteo** (default): Works out of the box, no API key needed
+- **Ambient Weather** (optional): For personal weather station owners
+  - Get API keys from [ambientweather.net/account](https://ambientweather.net/account)
+  - Required for Weather Logic Node
 
-## Troubleshooting
+## 📦 Node Categories
+
+| Category | Examples |
+|----------|----------|
+| **Home Assistant** | HA Generic Device, HA Device Automation |
+| **Timer/Event** | Sunrise/Sunset, Time of Day, Delay, Debounce |
+| **Logic** | AND, OR, NOT, Compare, Threshold, Switch |
+| **Color** | HSV Control, Timeline Color, Color Gradient |
+| **Inputs** | Toggle, Number Slider, Trigger Button |
+| **Utility** | Sender/Receiver, Display, Counter |
+| **Direct Devices** | Hue Light, Kasa Plug |
+
+## 💾 Data Persistence
+
+Your graphs are saved in `/data/graphs/` and persist across add-on updates and restarts.
+
+## 🔄 Updates
+
+- **Plugin Updates**: Click "🔌 Update Plugins" in the Control Panel (fast, no rebuild)
+- **Full Updates**: Use the add-on Update button when new versions are available
+
+## 📖 Documentation
+
+See the **Documentation** tab for detailed guides, or visit:
+- [Full Documentation](https://github.com/gregtee2/T2AutoTron)
+- [Getting Started Guide](https://github.com/gregtee2/T2AutoTron/blob/stable/v3_migration/GETTING_STARTED.md)
+- [Report Issues](https://github.com/gregtee2/T2AutoTron/issues)
+
+## 🐛 Troubleshooting
 
 | Issue | Solution |
 |-------|----------|
-| No devices showing | Check HA connection status in Control Panel |
-| Devices not responding | Verify HA token is valid in Settings |
-| Graph not running | Click **▶ Run** in Control Panel |
-| UI frozen | Press **F5** to reset the editor view |
+| No devices showing | Check HA connection in Control Panel → Settings → Test Connection |
+| Automations not running | Check Engine Status is green (running) in Control Panel |
+| Slow graph loading | Normal for 20+ nodes; caches after first load |
+| Build failed | Check add-on logs; report issue on GitHub |
 
 ## Support
 
 - [GitHub Issues](https://github.com/gregtee2/T2AutoTron/issues)
-- [Full Documentation](https://github.com/gregtee2/T2AutoTron#readme)
-- [Getting Started Guide](https://github.com/gregtee2/T2AutoTron/blob/main/v3_migration/GETTING_STARTED.md)
+- [Discussions](https://github.com/gregtee2/T2AutoTron/discussions)
 
 ## License
 
-MIT License - See [LICENSE](https://github.com/gregtee2/T2AutoTron/blob/main/LICENSE)
+MIT License
