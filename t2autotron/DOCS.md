@@ -22,6 +22,90 @@ Add new node types without rebuilding. Community plugins can be dropped into the
 
 ---
 
+## 🤔 Why T2AutoTron? (vs Node-RED)
+
+If you're familiar with Node-RED, you might wonder: "Why not just use that?" Great question! Here's an honest comparison:
+
+### T2AutoTron is a Visual-First Alternative
+
+| Feature | T2AutoTron | Node-RED |
+|---------|-----------|----------|
+| **Philosophy** | Visual-first - see data flow live on nodes | Message-based - debug via sidebar |
+| **HA Device Control** | All entities via HA Generic Device node | All entities via HA nodes |
+| **Learning Curve** | Lower - no `msg.payload` concepts to learn | Steeper - must understand message structure |
+| **Real-time Feedback** | Values and colors visible directly ON nodes | Text output in debug panel |
+| **Color/Lighting Tools** | Built-in HSV, splines, timelines, gradients | Manual function nodes required |
+| **Direct Device APIs** | Optional Hue/Kasa for smoother fades* | Usually via HA/MQTT |
+| **Node Ecosystem** | Focused, curated (~30 node types) | Massive (thousands of community nodes) |
+| **Maturity** | New/beta - actively developed | Battle-tested, enterprise-grade |
+
+*\*Direct Hue/Kasa control is optional - these devices also work via HA Generic Device through the Home Assistant API*
+
+### Choose T2AutoTron if:
+- ✅ You're a **visual thinker** who wants to SEE automations running
+- ✅ You want a **gentler learning curve** than Node-RED
+- ✅ **Color and circadian lighting** is important to you (built-in tools for this)
+- ✅ You want the **option** of direct Hue/Kasa for ultra-smooth color transitions
+- ✅ You prefer a **focused, curated toolset** over endless options
+
+### Choose Node-RED if:
+- ✅ You need **databases, HTTP APIs, MQTT**, or complex integrations
+- ✅ You want access to **thousands of community nodes**
+- ✅ You're comfortable with **message-based programming**
+- ✅ You need **industrial-grade reliability** for critical automations
+
+### They Can Coexist!
+T2AutoTron and Node-RED can run side-by-side on the same Home Assistant instance. Use T2AutoTron for visual lighting scenes and Node-RED for complex integrations.
+
+---
+
+## 📖 The Story Behind T2AutoTron
+
+### A 20-Year Itch Finally Scratched
+
+Back around 2003, I got into home automation. Every app I found was menu-driven or web-based—you'd click through screens to set up rules, but you couldn't *see* the logic flow. As a visual effects artist running **Nuke** (a node-based compositing tool) every day, I kept thinking: *"Why can't I just connect device nodes, trigger nodes, and logic nodes together like I do in my VFX work?"*
+
+Nothing like that existed. I thought about building it myself, but I wasn't a programmer. The learning curve to create something like that was far beyond the skill level I had—or was willing to put in.
+
+Fast forward 20 years.
+
+### LLMs Changed Everything
+
+Around 2023, large language models started writing code from natural language descriptions. Suddenly, I could focus on **designing the app and user experience** while the AI handled the heavy lifting of actual code. I decided to take another shot at my idea.
+
+I tried Node-RED first. It's powerful, but it didn't give me the simple, clean experience I wanted—one that felt like the node-based tools I'd been using for decades in visual effects.
+
+So I built T2AutoTron.
+
+### Why Home Assistant?
+
+Early on, I wrote direct integrations for Philips Hue and TP-Link Kasa devices. But I quickly realized: trying to build device managers for every smart device brand was a fool's errand. 
+
+Then it clicked: **Home Assistant already does device discovery and control for hundreds of device types.** Why reinvent that wheel?
+
+So T2AutoTron became a **friendlier front-end for Home Assistant**—a visual, node-based way to create automations using HA's device ecosystem. The direct Hue and Kasa integrations stuck around as optional extras for smoother color transitions, but HA handles the heavy lifting of device support.
+
+### And Here We Are
+
+This app is the result of a 20-year-old idea, finally made real by AI-assisted development. It's built by a non-programmer who wanted a specific tool that didn't exist—and figured out how to make it anyway.
+
+If you've ever thought "I wish I could just *see* my automations flow like a visual diagram"—that's exactly why this exists.
+
+### Why Share This?
+
+I'm sure there are other visual thinkers out there who'd appreciate a more refined, node-based experience for home automation. But I also need help!
+
+**This is beta software.** I need people to bang on it, push its limits, and tell me where it breaks. Every bug report makes the app better for everyone.
+
+If you find a bug or have a suggestion:
+1. Click the **🐛 Report Bug** button in the Control Panel
+2. It opens a GitHub issue pre-filled with debug info
+3. Describe what happened and submit!
+
+You can also grab logs from: **Settings → Add-ons → T2AutoTron → Logs tab**
+
+---
+
 ## 🚀 Quick Start
 
 ### Step 1: Open T2AutoTron
