@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.101] - 2025-12-19
+
+### Fixed
+- **Telegram Spam Fix**: Telegram notifications now only send on ON/OFF state changes, not on every brightness/color/HSV change. Previously, continuous color cycling would flood Telegram with thousands of messages per day.
+- **Cleaner Telegram Messages**: New format: `💡 *Living Room* turned *OFF*` instead of verbose multi-line updates.
+- **Debug Logging Gated**: HSV summary and recovery logs now only appear when `VERBOSE_LOGGING=true` in `.env`.
+
 ## [2.1.100] - 2025-12-19
 
 ### Fixed
