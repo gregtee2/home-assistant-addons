@@ -1,5 +1,53 @@
 # Changelog
 
+## [2.1.90] - 2025-12-18
+
+### Fixed
+- **AND Gate 30-Second Delay**: TimeRangeNode and DayOfWeekComparisonNode now have continuous update intervals. Previously, these nodes only updated when you changed a slider - now they tick automatically (1 second for TimeRange, 1 minute for DayOfWeek) so downstream logic gates respond instantly.
+
+## [2.1.89] - 2025-12-18
+
+### Added
+- **Stock Price Node**: New node fetches real-time stock quotes from Yahoo Finance. Outputs symbol, price, change amount, change percent, and up/down indicator.
+- **Timeline Color Negative Values**: Numerical mode now supports negative values (e.g., -5 to +5 for stock market mood lighting)
+
+### Fixed
+- **CORS for Stock API**: Added backend proxy `/api/stock/:symbol` to avoid Yahoo Finance CORS blocks
+
+## [2.1.77] - 2025-12-18
+
+### Fixed
+- **Device Timeline Empty**: Debug Dashboard now finds actual log categories instead of obsolete names
+
+## [2.1.76] - 2025-12-18
+
+### Fixed
+- **Update Button False Positive**: "Check for Updates" no longer shows false positives in add-on
+
+## [2.1.75] - 2025-12-18
+
+### Fixed
+- **HSV-Only Device Display**: Dashboard correctly shows HSV-only nodes as ON when sending colors
+
+## [2.1.73] - 2025-12-18
+
+### Added
+- **Device States API**: New `/api/engine/device-states` endpoint for comparing engine vs HA state
+- **Debug Dashboard Split View**: Separates anomalies from expected activity notes
+
+## [2.1.68] - 2025-12-17
+
+### Fixed
+- **Kasa Discovery in Add-on**: Added `host_network: true` so Kasa UDP broadcasts work in Docker
+
+## [2.1.64-67] - 2025-12-17
+
+### Fixed
+- **HA Device Dropdown Race Condition**: Multiple fixes for dropdowns showing empty after graph load
+  - Added RAF timing and retry logic (up to 10 retries)
+  - Added HTTP fallback if socket cache is empty
+  - Added delayed engine processing after graph load
+
 ## [2.1.61] - 2024-12-17
 
 ### Added
