@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.1.100] - 2025-12-19
+
+### Fixed
+- **HADeviceStateNode Retry Logic**: Instead of just keeping stale data on poll failure (band-aid), now actively retries failed polls with exponential backoff. First poll is immediate, then retries at 1s and 3s delays. Also adds 10-second fetch timeout to prevent hanging connections.
+- **Dynamic Poll Backoff**: When HA polls fail, the node gradually increases poll interval (up to 30s) to reduce load on a struggling HA server, then returns to normal speed once connection recovers.
+- **Error Categorization**: Poll failures now categorize error types (AUTH_FAILED, ENTITY_NOT_FOUND, TIMEOUT, DNS_FAILED, etc.) for better debugging.
+- **Recovery Logging**: Console shows clear "✅ Recovered" message when connection comes back after failures.
+
 ## [2.1.99] - 2025-12-19
 
 ### Fixed
