@@ -1,5 +1,23 @@
 # Changelog
 
+## [2.1.98] - 2025-12-19
+
+### Fixed
+- **Brightness Bar 39% Bug**: Color bars in HAGenericDeviceNode and KasaLightNode now render correctly. Previously showed 39% when brightness was 100% due to Rete's RefComponent not calling the custom component. Fixed by rendering the bar inline instead of through RefComponent.
+
+## [2.1.97] - 2025-12-19
+
+### Fixed
+- **HAGenericDeviceNode HA-Only Refactor**: Removed ~120 lines of unused Kasa/Hue direct API code. Node now only speaks Home Assistant format - HA handles device translation.
+- **Auto-Refresh Removal**: Removed 30-second polling interval from HAGenericDeviceNode. With 20 nodes, that was 2,400 API calls/hour for no reason. Real-time updates come via WebSocket push instead.
+- **Brightness Scale Fix**: Fixed double-normalization where 100 was divided by 255 again (100/255=39%).
+
+## [2.1.94-96] - 2025-12-19
+
+### Fixed
+- **Memory Leaks in HA Nodes**: Socket listeners now properly cleaned up on component unmount
+- **DelayNode Memory Leak**: Countdown interval now cleaned up via destroy() method
+
 ## [2.1.93] - 2025-12-18
 
 ### Added
