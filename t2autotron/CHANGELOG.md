@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.1.102] - 2025-12-19
+
+### Fixed
+- **LOG_LEVEL Crash**: Add-on would crash on startup if `.env` had an invalid `LOG_LEVEL` value. Now accepts any string instead of crashing.
+
 ## [2.1.101] - 2025-12-19
 
 ### Fixed
