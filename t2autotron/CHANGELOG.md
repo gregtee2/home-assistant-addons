@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.1.99] - 2025-12-19
+
+### Fixed
+- **Numerical Mode "Goes to Sleep" Bug**: Timeline Color nodes in numerical mode were stopping after hours in headless engine mode. Root cause: if HADeviceStateNode's API poll failed once, it would overwrite the cached state with `null` and downstream nodes would get no data. Now keeps last known good state on poll failures.
+- **Added Diagnostic Logging**: Engine now logs health check every 10 minutes. HADeviceStateNode, HADeviceAutomationNode, and SplineTimelineColorNode now log warnings when inputs go null (helps diagnose data flow issues).
+
 ## [2.1.98] - 2025-12-19
 
 ### Fixed
