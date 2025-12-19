@@ -1,5 +1,20 @@
 # Changelog
 
+## [2.1.93] - 2025-12-18
+
+### Added
+- **Download Graph Feature**: New "📥 Download Graph" button lets you export the current graph as a JSON file. Also added download buttons to the Load Graph modal for saved graphs. Perfect for backing up or transferring graphs between Pi and Windows.
+
+## [2.1.92] - 2025-12-18
+
+### Fixed
+- **Timeline Color Broken After Performance Fix**: Restored engine update interval for Timeline Color nodes. The performance fix in v2.1.91 accidentally removed the engine updates - now has dedicated interval when timer/preview is active.
+
+## [2.1.91] - 2025-12-18
+
+### Fixed
+- **Memory Leak / Performance**: TimeRangeNode, DayOfWeekComparisonNode, and SplineTimelineColorNode now only trigger changeCallback when their output values actually change. Reduced redundant calls from 100+/second to only when needed.
+
 ## [2.1.90] - 2025-12-18
 
 ### Fixed
