@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.1.110] - 2025-12-20
+
+### Added
+- **Ambient Weather Test Connection**: Added "Test Connection" button to the Ambient Weather settings section. Now you can verify your API Key, Application Key, and MAC Address are working before saving. Shows current temperature and humidity on success.
+
 ## [2.1.109] - 2025-12-20
 
 ### Fixed
