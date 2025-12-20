@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.1.112] - 2025-12-20
+
+### Fixed
+- **Nested Backdrop Groups**: Backdrop nodes can now be nested inside other backdrop nodes! When you move the outer group, the inner group (and all its contents) now moves with it. Previously, nested backdrops would get left behind when moving the parent group.
+
 ## [2.1.111] - 2025-12-20
 
 ### Fixed
