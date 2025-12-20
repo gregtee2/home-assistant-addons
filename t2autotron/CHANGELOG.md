@@ -1,5 +1,15 @@
 # Changelog
 
+## [2.1.105] - 2025-12-20
+
+### Fixed
+- **Reduced API Spam**: Removed 60-second forced update that was sending unnecessary commands every minute per device (~60 API calls/hour per light). Engine is now reliable enough that this LiteGraph-era workaround is no longer needed. Commands only sent when color actually changes.
+
+## [2.1.104] - 2025-12-19
+
+### Added
+- **Debug Dashboard Button**: Added 🔍 Debug Dashboard button to Control Panel. Opens the debug dashboard in a new tab - no more remembering IP addresses or ports.
+
 ## [2.1.103] - 2025-12-19
 
 ### Fixed
