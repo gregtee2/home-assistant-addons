@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.1.114] - 2025-12-20
+
+### Fixed
+- **Node Drag Improvements**: Multiple nodes can now be dragged from anywhere on their body, not just the title bar. Fixed: Weather Logic, Sunrise/Sunset, Time of Day, Color Gradient, and Spline Timeline Color nodes. Interactive controls (sliders, checkboxes, dropdowns) still work normally.
+
 ## [2.1.113] - 2025-12-20
 
 ### Fixed
