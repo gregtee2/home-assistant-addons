@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.1.103] - 2025-12-19
+
+### Fixed
+- **HADeviceAutomationNode Not Working in Engine**: Backend engine was instantiating the wrong node class for "HA Device Automation" nodes. Registry mapped to `HAGenericDeviceNode` instead of `HADeviceAutomationNode`, causing numerical Timeline Color nodes to receive `null` values. Now correctly creates the field-extraction node.
+
 ## [2.1.102] - 2025-12-19
 
 ### Fixed
