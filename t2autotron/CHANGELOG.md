@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.1.113] - 2025-12-20
+
+### Fixed
+- **Nested Backdrop Size Check**: Fixed bug where dragging a small (unlocked) backdrop inside a larger (locked) backdrop would incorrectly drag the parent too. Now only larger backdrops can "contain" smaller ones - a child can't capture its parent!
+
 ## [2.1.112] - 2025-12-20
 
 ### Fixed
