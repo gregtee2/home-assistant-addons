@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.106] - 2025-12-20
+
+### Added
+- **HueEffectNode**: New node to trigger built-in Hue light effects (candle, fire, prism, sunrise, etc.). Select multiple lights, wire inline with your color flow. Effects take priority over HSV commands automatically.
+- **Smart HSV Exclusion**: When HueEffectNode is active, its selected lights are automatically excluded from downstream HSV commands via metadata. Other lights in the same HA Generic Device continue receiving colors normally.
+- **HSV Passthrough Pattern**: HueEffectNode sits inline in color flow (Timeline → HueEffect → HA Device). Passes HSV through when inactive, runs effect when triggered.
+
 ## [2.1.105] - 2025-12-20
 
 ### Fixed
