@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.1.109] - 2025-12-20
+
+### Fixed
+- **HueEffectNode Light Discovery in Add-on**: Fixed bug where HueEffectNode couldn't discover Hue lights when running in the HA add-on environment. Was using raw `fetch()` instead of `window.apiFetch()` which handles the HA ingress URL correctly.
+
 ## [2.1.108] - 2025-12-20
 
 ### Fixed
