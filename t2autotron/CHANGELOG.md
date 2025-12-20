@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.1.111] - 2025-12-20
+
+### Fixed
+- **WeatherLogicNode Canvas Freeze**: Fixed bug where dropping a Weather Logic node in the add-on would freeze the canvas (couldn't move or delete). Was caused by accessing undefined output sockets before the node fully initialized. Added defensive checks to prevent crash.
+
 ## [2.1.110] - 2025-12-20
 
 ### Added
