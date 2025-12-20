@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.108] - 2025-12-20
+
+### Fixed
+- **Group Navigation Zoom Centering**: Fixed issue where clicking a group button didn't properly center the viewport on the group. Now uses manual zoom calculation for accurate centering.
+- **Console Log Spam**: Removed debug logging from DeviceStateControl that was spamming the browser console.
+- **Improved BackdropNode Detection**: Group buttons now detect backdrops more reliably using triple-check method.
+
 ## [2.1.107] - 2025-12-20
 
 ### Added
