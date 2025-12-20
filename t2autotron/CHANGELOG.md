@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.1.107] - 2025-12-20
+
+### Added
+- **Group Navigation Buttons**: Quick-jump buttons in Event Log header for each Backdrop group. Click to zoom the canvas to that group. Buttons auto-update when groups are created, renamed, recolored, or deleted. Great for navigating large graphs!
+
 ## [2.1.106] - 2025-12-20
 
 ### Added
