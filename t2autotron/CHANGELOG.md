@@ -1,5 +1,23 @@
 # Changelog
 
+## [2.1.120] - 2025-12-21
+
+### Added
+- **Theme Presets System**: 6 built-in themes (Tron, Midnight, Sunset, Forest, Monochrome, High Contrast) with instant switching - no reload required!
+- **Custom Theme Save**: Create your own color schemes and save them with custom names for later recall
+- **Categorized Theme Editor**: Theme settings now organized into 5 categories:
+  - 🎨 Core Colors (Primary, Background, Surface, Text)
+  - 🚦 Status Colors (Success, Warning, Error)
+  - 🔌 Socket Colors (Boolean, Number, String, HSV, Object, Light)
+  - ✨ Node Glow Colors (per-category glow colors)
+  - 📐 Editor (Border/Glow/Grid opacity sliders)
+- **Live Preview**: All color changes apply instantly as you pick them
+- **Transparent Settings Overlay**: Can see UI behind settings panel while choosing themes
+
+### Fixed
+- **Theme Color Picker**: Individual color picker overrides now work correctly and apply in real-time
+- **UI Panel Theming**: Dock, Favorites Panel, and Forecast Panel now all respect theme colors
+
 ## [2.1.119] - 2025-12-21
 
 ### Fixed
