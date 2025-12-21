@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.1.118] - 2025-12-21
+
+### Added
+- **HA Device Field Node**: New simplified node that combines HA Device State Output + HA Device Automation into one easy-to-use package. Pick a device, pick a field (like `state`, `is_home`, `zone`), get the value. Perfect for presence detection! Includes type filter (Light, Switch, Sensor, Person, Device Tracker) and letter filter (ABC, DEF, etc.) to quickly find devices.
+
 ## [2.1.117] - 2025-12-21
 
 ### Fixed
