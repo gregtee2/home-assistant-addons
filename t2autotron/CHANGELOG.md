@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.1.122] - 2025-12-21
+
+### Fixed
+- **New Entity Auto-Discovery**: Entities added to Home Assistant after server start are now automatically discovered via WebSocket. Previously required server restart to see new devices.
+
 ## [2.1.121] - 2025-12-21
 
 ### Added
