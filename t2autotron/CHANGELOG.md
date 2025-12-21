@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.1.117] - 2025-12-21
+
+### Fixed
+- **Debug Dashboard False Positives**: Color mismatches are now only flagged when the light is actually ON. Previously, the dashboard would report "Engine sending Green, light shows Red" for lights that were OFF - which is expected behavior (HSV commands to OFF lights are harmless and ignored by HA).
+
 ## [2.1.116] - 2025-12-20
 
 ### Fixed
