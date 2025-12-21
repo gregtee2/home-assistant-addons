@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.1.115] - 2025-12-20
+
+### Added
+- **Device Tracker & Person Entity Support**: You can now use your iPhone (or any phone with HA Companion App) for presence detection! Select "Device Tracker" or "Person" in the HA Device State Output filter dropdown. New fields available: `state` (returns "home"/"not_home"), `zone` (current zone name), and `is_home` (boolean for logic gates). Perfect for "turn on lights when I get home" automations!
+
 ## [2.1.114] - 2025-12-20
 
 ### Fixed
