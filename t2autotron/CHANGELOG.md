@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.121] - 2025-12-21
+
+### Added
+- **HA Lock Control Node**: New node for controlling smart locks (Kwikset, Schlage, August, etc.) via Home Assistant. Features Lock/Unlock buttons, real-time status display (🔒/🔓), device search, and trigger input for automation (true=unlock, false=lock). Outputs `state` and `is_locked` for logic gates.
+- **Lock Domain Support**: HA Device Field node now supports lock entities with state, is_locked, and is_unlocked fields
+- **Additional Device Domains**: Climate, Vacuum, and Camera entities now available in HA Device Field node
+
 ## [2.1.120] - 2025-12-21
 
 ### Added
