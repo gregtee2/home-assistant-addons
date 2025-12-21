@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.1.116] - 2025-12-20
+
+### Fixed
+- **Comparison Node Re-evaluation**: The Comparison node now properly re-evaluates when you type in the Compare Value field. Previously, typing a new value wouldn't trigger the comparison to run - you had to reconnect a wire to force it. Now it updates instantly as you type.
+
 ## [2.1.115] - 2025-12-20
 
 ### Added
