@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.1.119] - 2025-12-21
+
+### Fixed
+- **HA Device Field Node Serialization**: Node now properly saves/restores all settings (device, field, filters) when copy/pasting or saving graphs. Uses same serialization pattern as HA Device State Output node.
+
 ## [2.1.118] - 2025-12-21
 
 ### Added
