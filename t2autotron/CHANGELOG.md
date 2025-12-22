@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.1.131] - 2025-12-22
+
+### Fixed
+- **Lock Node Pulse Mode**: Fixed HALockNode not responding to first pulse. The "don't act on first value" logic was blocking pulse-triggered commands. Now correctly treats `undefined → false/true` as a valid state change.
+- **Lock Command Verify & Retry**: Lock node now verifies command success after 5 seconds and automatically retries up to 3 times if the lock didn't respond. Provides console feedback with ✅/❌/🔄 status.
+
 ## [2.1.128] - 2025-12-22
 
 ### Fixed
