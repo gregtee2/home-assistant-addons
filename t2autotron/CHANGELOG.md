@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.1.128] - 2025-12-22
+
+### Fixed
+- **Inject Node Pulse Mode (Backend)**: Backend engine now fully supports pulse mode and scheduled triggers. Previously the backend had a stripped-down InjectNode that lacked schedule time, day-of-week, and pulse mode support - causing scheduled automations to fail in headless mode.
+- **Lock Node Pulse Detection**: HALockNode now properly resets trigger state when input returns to undefined, enabling reliable pulse-based automation.
+
 ## [2.1.122] - 2025-12-21
 
 ### Fixed
