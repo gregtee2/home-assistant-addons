@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.1.132] - 2025-12-22
+
+### Added
+- **Lock Telegram Notifications**: HALockNode now sends Telegram notifications when lock state changes are verified. Messages include: `🔒 *Front Door* locked at 10:00 PM` or `⚠️ *Front Door* failed to lock after 3 attempts!`
+- **Telegram Send API**: New `POST /api/telegram/send` endpoint for sending custom Telegram messages
+
 ## [2.1.131] - 2025-12-22
 
 ### Fixed
