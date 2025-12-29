@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.1.136] - 2025-12-29
+
+### Fixed
+- **Kasa Offline Log Spam Eliminated**: Fixed massive log spam where Kasa devices were incorrectly marked as "offline" every few seconds when they were just turned off. The library's UDP discovery events were unreliable - now we only detect offline via TCP polling failures. Devices must fail 3+ consecutive polls before being logged as offline (once).
+- **Duplicate Notification Logs Removed**: Silenced "Skipped duplicate ON/OFF" log messages that cluttered the console.
+
 ## [2.1.135] - 2025-12-29
 
 ### Added
