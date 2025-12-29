@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.1.135] - 2025-12-29
+
+### Added
+- **Backend HueEffectNode**: Hue Effect nodes now work in headless 24/7 mode. The engine can trigger Hue effects (candle, fire, prism, etc.) on schedules without the UI. Previously, Hue Effect nodes only worked when the browser was open.
+
 ## [2.1.134] - 2025-12-29
 
 ### Fixed
