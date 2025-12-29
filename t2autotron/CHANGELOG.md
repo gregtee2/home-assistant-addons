@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.1.133] - 2025-12-29
+
+### Fixed
+- **Engine Auto-Start Env Var**: Fixed mismatch between `ENGINE_AUTOSTART` (set in run.sh) and `ENGINE_AUTO_START` (checked in code). Now accepts both variants.
+- **Auto-Start Diagnostic Logging**: Added detailed startup logs to diagnose when engine doesn't auto-load graph. Look for `[Engine] Auto-start check:` in addon logs to see exactly why engine did/didn't start.
+
 ## [2.1.132] - 2025-12-22
 
 ### Added
