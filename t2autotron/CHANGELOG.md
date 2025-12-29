@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.1.134] - 2025-12-29
+
+### Fixed
+- **Backend Engine Label Mappings**: Added missing label-to-node mappings for `HA Lock Control` → `HALockNode`, `Stock Price` → `StockPriceNode`, and marked `HA Device Field` and `Hue Effect` as UI-only. Previously these nodes were skipped on engine startup with "Skipping unregistered node type" warnings.
+
 ## [2.1.133] - 2025-12-29
 
 ### Fixed
