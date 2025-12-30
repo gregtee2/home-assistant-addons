@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.1.139] - 2025-12-29
+
+### Improved
+- **WiZ Effect Visual Preview**: Added animated color preview bar that shows what the selected effect looks like (flicker for Fireplace, waves for Ocean, strobing for Party, etc.). Changes in real-time as you select different effects.
+- **Fixed Output Socket Alignment**: Output sockets now correctly appear to the right of labels (HSV Out, Active, Applied).
+
 ## [2.1.138] - 2025-12-29
 
 ### Added
