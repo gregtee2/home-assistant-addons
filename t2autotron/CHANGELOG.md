@@ -1,5 +1,25 @@
 # Changelog
 
+## [2.1.143] - 2025-12-29
+
+### Fixed
+- **WiZ Effect 400 Errors**: Fixed 400 Bad Request errors when triggering WiZ effects via Home Assistant.
+
+## [2.1.142] - 2025-12-29
+
+### Added
+- **WiZ Effect Speed Control**: Added speed slider for animated WiZ effects (Ocean, Fireplace, Party, etc.) where applicable.
+
+## [2.1.141] - 2025-12-29
+
+### Improved
+- **WiZ Effect Input Socket**: Replaced cycle mode with `effect_name` input socket for scheduled effect changes. Connect a Switch or Timeline node to change effects at different times (e.g., Ocean at 9pm, Fireplace at 10pm).
+
+## [2.1.140] - 2025-12-29
+
+### Added
+- **WiZ Effect Cycle Mode**: Added optional cycling through effects on each trigger.
+
 ## [2.1.139] - 2025-12-29
 
 ### Improved
