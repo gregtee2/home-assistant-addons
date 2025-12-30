@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.1.144] - 2025-12-30
+
+### Added
+- **Device Audit System**: Engine now automatically compares its intended device states vs actual HA states every 5 minutes. Mismatches are logged to help debug "wrong state" issues. Check addon logs for `[AUDIT]` entries showing any devices that aren't matching expectations.
+- **Audit API Endpoints**: Added `/api/engine/audit` to run an on-demand audit, and `/api/engine/audit/tracked` to see what devices are being tracked.
+
 ## [2.1.143] - 2025-12-29
 
 ### Fixed
