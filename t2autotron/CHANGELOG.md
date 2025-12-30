@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.1.137] - 2025-12-29
+
+### Added
+- **Backend WizEffectNode**: WiZ Effect node for triggering built-in WiZ scenes (Fireplace, Ocean, Party, Christmas, etc.) via Home Assistant. Works in headless 24/7 mode just like HueEffectNode. Supports 35+ effects including Candlelight, Club, Deep dive, and more.
+
 ## [2.1.136] - 2025-12-29
 
 ### Fixed
