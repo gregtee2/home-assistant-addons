@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.1.146] - 2025-12-30
+
+### Added
+- **Startup State Reconciliation**: Engine now queries actual HA device states before starting, then compares to what the graph expects. Devices already in the correct state won't receive unnecessary commands at startup. This prevents spurious OFF commands to devices that are already OFF, and reduces startup API spam.
+
+### Changed
+- **Engine Start is Async**: The `start()` method now awaits state reconciliation before processing the first tick. This adds ~1-2 seconds to startup but ensures clean state.
+
 ## [2.1.145] - 2025-12-30
 
 ### Fixed
