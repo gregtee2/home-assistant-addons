@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.1.145] - 2025-12-30
+
+### Fixed
+- **Reduced Addon Log Noise**: Removed excessive per-tick logging from engine nodes. Previously, nodes like SplineTimelineColorNode, HADeviceStateNode, and HADeviceAutomationNode were logging every 100ms (70,000+ lines/day). Now only essential events are logged. Debug logs can still be enabled via `VERBOSE_LOGGING=true` environment variable.
+- **BulkStateCache Log Frequency**: Reduced "Cache refreshed" log from every 30 seconds to every 10 minutes.
+
+### Added
+- **Command Tracking System**: New `/api/engine/commands` endpoint tracks all device commands with origin info (T2AutoTron, HA User, HA Automation, External). Helps answer "who changed that device and why?" Tracks both outgoing commands and incoming state changes with correlation.
+
 ## [2.1.144] - 2025-12-30
 
 ### Added
