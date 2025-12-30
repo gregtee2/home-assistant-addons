@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.1.138] - 2025-12-29
+
+### Added
+- **WiZ Effect Node (Full)**: Frontend plugin for WiZ light effects! Select your WiZ lights, pick from 35+ effects (Fireplace, Ocean, Party, Christmas, Club, etc.), and trigger them on schedules or events. Works just like the Hue Effect node but for WiZ bulbs.
+
 ## [2.1.137] - 2025-12-29
 
 ### Added
