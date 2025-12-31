@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.1.147] - 2025-12-31
+
+### Added
+- **Sync New Device on Add**: When you add a new device to an HA Generic Device node, it now automatically syncs to match the current trigger state. If the trigger is ON but the new device is OFF, the device will be turned ON immediately. This only applies to "Follow" mode and only when adding new devices - manual changes to existing devices are still respected.
+
 ## [2.1.146] - 2025-12-30
 
 ### Added
