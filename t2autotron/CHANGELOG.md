@@ -1,3 +1,10 @@
+## [2.1.153] - 2025-12-31
+### Added
+- **Backend Engine: TextStringNode** - Outputs static text in headless mode
+- **Backend Engine: StringConcatNode** - Combines strings with separator/prefix/suffix in headless mode  
+- **Backend Engine: UpcomingEventsNode** - Event Announcer works 24/7 without browser
+- **Backend Engine: TTSAnnouncementNode** - Now supports multi-speaker and ElevenLabs in headless mode
+
 ## [2.1.152] - 2025-12-31
 ### Fixed
 - **Denon/AVR TTS Queue Clear**: Improved Denon fix to also call `clear_playlist` before playing TTS. This fully clears the queue instead of just stopping playback.
