@@ -1,3 +1,13 @@
+## [2.1.150] - 2025-12-31
+### Added
+- **ElevenLabs TTS Integration**: TTS Announcement node now supports ElevenLabs AI voices (Charlotte, etc.) in addition to HA's built-in TTS services
+- ElevenLabs API key and PUBLIC_URL settings in Settings panel
+
+### Fixed
+- **ElevenLabs Model Update**: Changed from deprecated `eleven_monolingual_v1` to `eleven_multilingual_v2` for free tier compatibility
+- **TTS Socket Listener Stacking**: Fixed bug where test button would fire multiple times (stacking announcements)
+- **Kasa TCP Timeout Spam**: Silenced the tplink-smarthome-api library's internal stack trace logging for device timeouts
+
 # Changelog
 
 ## [2.1.147] - 2025-12-31
