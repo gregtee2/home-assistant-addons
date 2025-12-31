@@ -1,3 +1,7 @@
+## [2.1.152] - 2025-12-31
+### Fixed
+- **Denon/AVR TTS Queue Clear**: Improved Denon fix to also call `clear_playlist` before playing TTS. This fully clears the queue instead of just stopping playback.
+
 ## [2.1.151] - 2025-12-31
 ### Added
 - **Text String Node**: New utility node that outputs a static text string. Useful for fixed messages or labels.
