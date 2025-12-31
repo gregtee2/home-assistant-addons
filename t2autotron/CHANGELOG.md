@@ -1,3 +1,13 @@
+## [2.1.151] - 2025-12-31
+### Added
+- **Text String Node**: New utility node that outputs a static text string. Useful for fixed messages or labels.
+- **String Concat Node**: New utility node that combines up to 4 text inputs with configurable separator, prefix, and suffix. Great for building dynamic TTS messages.
+- **Weather Logic Summary Text Output**: Weather Logic node now has a "Summary Text" output for TTS announcements (e.g., "Temperature is 55 degrees, humidity 93 percent...")
+
+### Fixed
+- **Weather Logic Rain Graphs**: Fixed rain rows showing "No Data" even when rain values were present. Switched from logarithmic to linear scale for small values.
+- **Denon/AVR TTS Repeat Bug**: Added media_stop before play_media and enqueue='replace' to prevent receivers from queueing/repeating announcements.
+
 ## [2.1.150] - 2025-12-31
 ### Added
 - **ElevenLabs TTS Integration**: TTS Announcement node now supports ElevenLabs AI voices (Charlotte, etc.) in addition to HA's built-in TTS services
