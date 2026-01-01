@@ -1,3 +1,10 @@
+## [2.1.155] - 2025-12-31
+### Fixed
+- **Event Announcer Add-on Browser Fix**: Frontend now requests events from backend via socket
+  - Added `request-upcoming-events` socket handler
+  - Frontend Event Announcer merges events from both frontend registry AND backend engine
+  - Works in both add-on browser AND headless mode
+
 ## [2.1.154] - 2025-12-31
 ### Fixed
 - **Event Announcer Headless Mode**: UpcomingEventsNode now works in HA add-on without browser open
