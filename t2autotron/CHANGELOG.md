@@ -1,3 +1,10 @@
+## [2.1.157] - 2025-12-31
+### Added
+- Event Announcer now has a Priority Message input socket for ad-hoc announcements
+- Ad-hoc messages jump ahead of scheduled events with 3-second cooldown
+- Visual feedback shows purple indicators when announcing priority messages
+- Change detection prevents duplicate announcements of same message
+
 ## [2.1.156] - 2025-12-31
 ### Added
 - Event Announcer now shows preview of next 3 upcoming events in the node UI
@@ -437,4 +444,5 @@
 - Favorites panel for quick node access
 - Backdrop nodes for visual organization
 - Settings panel with connection testing
+
 
