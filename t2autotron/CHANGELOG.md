@@ -1,3 +1,8 @@
+## [2.1.156] - 2025-12-31
+### Added
+- Event Announcer now shows preview of next 3 upcoming events in the node UI
+- Preview updates in real-time with countdown timers
+
 ## [2.1.155] - 2025-12-31
 ### Fixed
 - **Event Announcer Add-on Browser Fix**: Frontend now requests events from backend via socket
@@ -432,3 +437,4 @@
 - Favorites panel for quick node access
 - Backdrop nodes for visual organization
 - Settings panel with connection testing
+
