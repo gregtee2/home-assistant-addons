@@ -1,3 +1,10 @@
+## [2.1.160] - 2025-12-31
+### Fixed
+- Inject node Pulse Mode now works correctly with scheduled triggers and all payload types
+- Pulse uses latch mechanism - value stays pending until actually read by downstream nodes
+- Fixed timing issue where Rete engine was missing 500ms pulse window
+- Text String and String Concat nodes now have proper backgrounds (were transparent)
+
 ## [2.1.159] - 2025-12-31
 ### Fixed
 - Event Announcer events list no longer flickers every second
