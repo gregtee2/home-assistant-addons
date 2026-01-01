@@ -1,3 +1,9 @@
+## [2.1.158] - 2025-12-31
+### Fixed
+- Event Announcer node now has proper background (was transparent)
+- Fixed node height flickering - events section now has stable height
+- Empty state message shown when no events scheduled
+
 ## [2.1.157] - 2025-12-31
 ### Added
 - Event Announcer now has a Priority Message input socket for ad-hoc announcements
@@ -444,5 +450,6 @@
 - Favorites panel for quick node access
 - Backdrop nodes for visual organization
 - Settings panel with connection testing
+
 
 
