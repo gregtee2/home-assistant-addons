@@ -1,3 +1,8 @@
+## [2.1.159] - 2025-12-31
+### Fixed
+- Event Announcer events list no longer flickers every second
+- Only re-renders when event data actually changes
+
 ## [2.1.158] - 2025-12-31
 ### Fixed
 - Event Announcer node now has proper background (was transparent)
@@ -450,6 +455,7 @@
 - Favorites panel for quick node access
 - Backdrop nodes for visual organization
 - Settings panel with connection testing
+
 
 
 
