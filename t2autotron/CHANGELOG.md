@@ -1,3 +1,10 @@
+## [2.1.154] - 2025-12-31
+### Fixed
+- **Event Announcer Headless Mode**: UpcomingEventsNode now works in HA add-on without browser open
+  - Added scheduled events registry to backend engine
+  - TimeOfDayNode and SunriseSunsetNode now register their upcoming events with the engine
+  - Event Announcer can now read scheduled events in headless mode for 24/7 TTS announcements
+
 ## [2.1.153] - 2025-12-31
 ### Added
 - **Backend Engine: TextStringNode** - Outputs static text in headless mode
