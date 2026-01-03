@@ -1,3 +1,34 @@
+## [2.1.172] - 2026-01-02
+### Fixed
+- **Audio Output: Station changes now stick ("Last Write Wins")**
+  - Previously, changing station via UI dropdown would be overridden by automation input on next tick
+  - Now uses edge detection: automation input only applies when its VALUE changes, not every tick
+  - Change station via Station Selector node OR UI dropdown - whichever you touch last wins!
+- **Audio Output: Apple devices (HomePod) now properly change stations**
+  - Apple devices ignore new stream commands if already playing
+  - Added `forceStop` parameter - stops current stream, waits 300ms, then starts new stream
+  - Station changes via automation now use forceStop for reliable switching
+- **Audio Output: UI section states now persist across save/load**
+  - Expanded/collapsed state of IO, Speakers, Stream, and TTS sections now saved with graph
+
+### Added
+- **Audio Output: 🌲 Nature Sounds preset button**
+  - One-click access to 6 curated ambient/sleep sound stations (all Apple-compatible MP3)
+  - NATURE RADIO SLEEP, MyNoise Pure Nature, Ambi Nature Radio, Nature Radio Rain, Epic Lounge, Radio Art
+- **Audio Output: Browse Streams is now the default Add Station mode**
+  - Clicking "Add Station" now opens the search/browse view instead of manual URL entry
+
+## [2.1.162] - 2026-01-01
+### Fixed
+- **CRITICAL: Devices now properly turn off in add-on mode**. Fixed 4 discrepancies between browser and backend engine:
+  - Backend now has `coerceBoolean()` to interpret `"false"` (string), `0`, `null` as proper `false`
+  - Fixed edge detection - uses explicit rising/falling edge like frontend
+  - Fixed reconcile incorrectly pre-setting lastTrigger from device state
+  - Fixed warmup period (first 1 second) dropping commands - now queues and executes after warmup
+
+### Added
+- Inject node now has optional `Value Override` input socket - connect another node's output to dynamically set the inject value
+
 ## [2.1.160] - 2025-12-31
 ### Fixed
 - Inject node Pulse Mode now works correctly with scheduled triggers and all payload types
