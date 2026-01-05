@@ -1,3 +1,73 @@
+## [2.1.201] - 2026-01-05
+### Fixed
+- **Backend TimeRangeNode output mismatch**: Backend engine output `active` but graph expected `isInRange`
+  - Time-based conditions with logic gates (AND/OR) now work correctly in headless mode
+  - Also added support for frontend property format (`startHour`, `startMinute` vs `startTime`)
+
+## [2.1.196] - 2026-01-04
+### Fixed
+- **TTS Triple-Play Bug**: Clicking TTS test button once would play announcement 2-3 times
+  - Chatterbox WAV files now auto-delete after 30 seconds (was accumulating indefinitely)
+  - Added `enqueue: 'replace'` to HA play_media to replace queued audio instead of adding to queue
+- **TTS Stream Double-Pause on Denon AVR**: Stream would pause twice after TTS
+  - Fixed redundant `changeCallback()` triggers in EventAnnouncer interval
+  - Removed unnecessary forceStop when resuming stream
+  - Added 1.5s settling delay for AVR devices before sending play command
+- **Frontend editor-active not sent on page refresh**: Backend engine would control devices even with frontend open
+  - Now sends `editor-active` even if socket is already connected when useEffect runs
+
+## [2.1.194] - 2026-01-04
+### Fixed
+- **ID matching audit: Fixed 3 more HA nodes**
+  - `HADeviceFieldNode` - now uses `isSameDevice()` for socket updates
+  - `HADeviceStateOutputNode` - now uses `isSameDevice()` for socket updates  
+  - `HADeviceAutomationNode` - now uses `isSameDevice()` for socket updates
+  - Kasa nodes already handled correctly (both use `kasa_` prefix)
+
+## [2.1.193] - 2026-01-04
+### Added
+- **Centralized DeviceRegistry in deviceManagers.js**
+  - Single source of truth for all device ID operations
+  - `getAllDevicesFlat()` - Get all devices from all sources in one array
+  - `findDeviceById()` - Find device across HA/Kasa/Hue/Shelly by any ID format
+  - `getDeviceSource()` - Determine if device is HA, Kasa, Hue, or Shelly
+  - `getDeviceApiInfo()` - Get correct API endpoint for any device
+  - Backend now has canonical ID utilities that frontend can also use
+
+## [2.1.192] - 2026-01-04
+### Added
+- **ID normalization utilities in T2HAUtils**
+  - `normalizeDeviceId()` - Ensures consistent ha_ prefix
+  - `stripDevicePrefix()` - Removes prefix for API calls  
+  - `isSameDevice()` - Compares IDs ignoring prefix differences
+  - Prevents future ID format mismatch bugs
+
+## [2.1.191] - 2026-01-04
+### Fixed
+- **HA Generic Device: Socket update ID matching**
+  - Fixed issue where socket state updates weren't applied to some devices
+  - Socket sends `light.xxx` but node stored `ha_light.xxx` - matching now handles both formats
+  - Devices now correctly show ON/OFF state from real-time HA updates
+
+## [2.1.190] - 2026-01-03
+### Fixed
+- **HA Generic Device: Optimistic state update with command lock**
+  - Device nodes now show correct state immediately after sending commands
+  - Previously, nodes would briefly show wrong state (e.g., "off" right after turning light "on") due to Zigbee latency
+  - Now uses optimistic update: UI trusts the command we sent, ignores stale HA state for 3 seconds
+  - Confirmation fetch after 2.5s verifies actual device state
+
+## [2.1.189] - 2026-01-03
+### Added
+- **Sync-on-Close: Graph automatically syncs to backend when you switch tabs or close browser**
+  - Uses `visibilitychange` event to push current graph state before you leave
+  - Backend hot-reloads the graph and continues automation seamlessly
+  - Works around browser restrictions that block traditional `beforeunload` events
+  - Maximum data loss reduced from "everything since last save" to "few seconds since last tab switch"
+
+### Fixed
+- **Device sync settling delay (v2.1.187)**: Lights now go directly to correct state on graph load without ON→OFF flicker
+
 ## [2.1.172] - 2026-01-02
 ### Fixed
 - **Audio Output: Station changes now stick ("Last Write Wins")**
