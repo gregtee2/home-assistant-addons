@@ -1,3 +1,12 @@
+## [2.1.206] - 2026-01-06
+### Added
+- **State Machine per-state timers**: States can now auto-advance after a duration
+  - Format: `idle,armed,triggered:120,cooldown:30` (state:seconds)
+  - Use `:timeout` condition in transitions: `triggered→cooldown:timeout`
+  - UI shows countdown timer on active timed states
+  - New `remaining` output shows seconds left on timer
+  - New `is_<stateName>` boolean outputs for each state (e.g., `is_idle`, `is_triggered`)
+
 ## [2.1.205] - 2026-01-06
 ### Fixed
 - **State Machine node missing socket labels**: Input/output sockets now show their labels (Trigger, Reset, Set State, State, Index, Changed)
