@@ -1,3 +1,7 @@
+## [2.1.205] - 2026-01-06
+### Fixed
+- **State Machine node missing socket labels**: Input/output sockets now show their labels (Trigger, Reset, Set State, State, Index, Changed)
+
 ## [2.1.204] - 2026-01-06
 ### Fixed
 - **Debug Dashboard false Color Mismatch for Hue Effects**: Lights under Hue Effect control (Candle, Fire, etc.) were flagged as "Color Mismatch"
