@@ -1,3 +1,10 @@
+## [2.1.204] - 2026-01-06
+### Fixed
+- **Debug Dashboard false Color Mismatch for Hue Effects**: Lights under Hue Effect control (Candle, Fire, etc.) were flagged as "Color Mismatch"
+  - Engine now tracks which lights have active effects via `isEffectActive` flag
+  - Device-states API adds `effectOverride: true` for effect-controlled lights
+  - Dashboard skips color comparison for lights with effect override
+
 ## [2.1.203] - 2026-01-06
 ### Fixed
 - **HALockNode showing UNKNOWN in Debug Dashboard**: Lock devices were not reporting expected state
