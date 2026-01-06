@@ -1,3 +1,10 @@
+## [2.1.203] - 2026-01-06
+### Fixed
+- **HALockNode showing UNKNOWN in Debug Dashboard**: Lock devices were not reporting expected state
+  - Added specific HALockNode handling in `/api/engine/device-states` endpoint
+  - Dashboard now includes locks in device lookup (was only checking lights/switches)
+  - Properly handles "locked"/"unlocked" states instead of just "on"/"off"
+
 ## [2.1.202] - 2026-01-06
 ### Fixed
 - **Backend WeatherLogicNode field name mismatch**: Backend expected `solar_radiation` but weatherService returns `solarradiation`
