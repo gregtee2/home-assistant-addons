@@ -1,6 +1,6 @@
 name: "T2AutoTron"
 description: "Visual node-based smart home automation editor with real-time device control"
-version: "2.1.201"
+version: "2.1.202"
 slug: "t2autotron"
 url: "https://github.com/gregtee2/T2AutoTron"
 arch:

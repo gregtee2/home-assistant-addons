@@ -1,3 +1,10 @@
+## [2.1.202] - 2026-01-06
+### Fixed
+- **Backend WeatherLogicNode field name mismatch**: Backend expected `solar_radiation` but weatherService returns `solarradiation`
+  - Fixed all weather field mappings: `solarradiation`, `tempf`, `windspeedmph`, `hourlyrainin`, `eventrainin`, `dailyrainin`
+  - Solar-based triggers (e.g., "House Lights ON when solar < 40 W/m²") now work correctly in headless mode
+  - Also fixed threshold logic to use "in-range" check (value between low and high) matching frontend behavior
+
 ## [2.1.201] - 2026-01-05
 ### Fixed
 - **Backend TimeRangeNode output mismatch**: Backend engine output `active` but graph expected `isInRange`
