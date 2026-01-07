@@ -1,3 +1,11 @@
+## [2.1.222] - 2026-01-07
+### Fixed
+- **HADeviceFieldNode missing from backend engine**: Timeline Color nodes using HA sensor values (temperature, humidity, etc.) were stuck on default colors in headless mode
+  - Root cause: HADeviceFieldNode was marked as UI-only (null) in BackendNodeRegistry
+  - Added full backend implementation that reads sensor values from HA via bulkStateCache
+  - Timeline Color nodes in numerical mode now correctly receive input values
+  - Fixes: "Bar Lamp: Engine sending Purple (279°) but light showing Green (145°)"
+
 ## [2.1.221] - 2026-01-07
 ### Changed
 - **Complete CSS centralization for theming**: All node background gradients now use centralized CSS variables
