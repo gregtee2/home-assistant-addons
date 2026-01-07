@@ -1,3 +1,29 @@
+## [2.1.221] - 2026-01-07
+### Changed
+- **Complete CSS centralization for theming**: All node background gradients now use centralized CSS variables
+  - Removed 40+ instances of hardcoded inline background styles from plugin files
+  - Added shared CSS utility classes (.node-bg-gradient, .node-section-bg, etc.)
+  - Theme changes now require editing only ONE file (node-theme.css) instead of 40+ plugin files
+  - All nodes maintain consistent hover glow effects
+  - Improved maintainability and theme customization
+
+## [2.1.208] - 2026-01-06
+### Fixed
+- **REFRESH button not refreshing device states**: The 🔄 Refresh button on HAGenericDeviceNode only refreshed the device dropdown list, not the actual device states
+  - Now fetches both device list AND current states for all selected devices
+  - Useful for forcing a state sync after overnight sessions
+
+### Added
+- **Debug logging for kitchen device state updates**: Temporary logging to diagnose state display issues
+
+## [2.1.207] - 2026-01-06
+### Fixed
+- **Hue/WiZ Effect restore turning lights back ON at midnight**: When effect deactivated (trigger→false), effect nodes were restoring lights to their "previous" ON state, overriding the downstream turn_off command
+  - Effect nodes now only clear the effect, NOT restore on/off state
+  - On/off is exclusively handled by downstream HAGenericDeviceNode
+  - Added debug logging for falling edge detection to diagnose future issues
+  - Fixes: "Office Floor Lights: Engine says OFF, HA says ON"
+
 ## [2.1.206] - 2026-01-06
 ### Added
 - **State Machine per-state timers**: States can now auto-advance after a duration
