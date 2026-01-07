@@ -1,0 +1,255 @@
+(function() {
+    // Debug: console.log("[SenderNode] Loading plugin...");
+
+    if (!window.Rete || !window.React || !window.RefComponent || !window.sockets) {
+        console.error("[SenderNode] Missing dependencies");
+        return;
+    }
+
+    const { ClassicPreset } = window.Rete;
+    const React = window.React;
+    const { useState, useEffect, useCallback } = React;
+    const RefComponent = window.RefComponent;
+    const sockets = window.sockets;
+    const { HelpIcon } = window.T2Controls || {};
+
+    // -------------------------------------------------------------------------
+    // TOOLTIPS
+    // -------------------------------------------------------------------------
+    const tooltips = {
+        node: "Broadcasts a value to all Receiver nodes with matching name.\n\nUse Sender/Receiver pairs to pass data between distant parts of your graph without wires.\n\nType prefixes ([Trigger], [HSV], etc.) are added automatically.",
+        inputs: {
+            in: "Any value to broadcast.\n\nSupported types:\n• Boolean → [Trigger]\n• Number → [Number]\n• HSV object → [HSV]\n• Other objects → [Object]"
+        },
+        controls: {
+            name: "Name for this channel.\n\nReceivers with the same name will receive this value.\n\nExample: 'LivingRoom' → '[Trigger]LivingRoom'"
+        }
+    };
+
+    // -------------------------------------------------------------------------
+    // SHARED BUFFER SYSTEM
+    // -------------------------------------------------------------------------
+    window.AutoTronBuffer = window.AutoTronBuffer || {
+        data: {},
+        sources: {},  // Track the source node for each buffer key
+        lastTrigger: null, // Track the most recent trigger source for attribution
+        listeners: [],
+        set(key, value, source = null) {
+            // Only notify if value actually changed to prevent loops
+            if (JSON.stringify(this.data[key]) !== JSON.stringify(value)) {
+                this.data[key] = value;
+                if (source) {
+                    this.sources[key] = { name: source, timestamp: Date.now() };
+                    // Track as last active trigger source (for device command attribution)
+                    this.lastTrigger = { source, key, timestamp: Date.now() };
+                }
+                this.notify(key);
+            }
+        },
+        get(key) {
+            return this.data[key];
+        },
+        getSource(key) {
+            // Return source if set within last 10 seconds, otherwise null
+            const src = this.sources[key];
+            if (src && Date.now() - src.timestamp < 10000) {
+                return src.name;
+            }
+            return null;
+        },
+        // Get the most recent trigger source (within last 5 seconds)
+        getLastTriggerSource() {
+            if (this.lastTrigger && Date.now() - this.lastTrigger.timestamp < 5000) {
+                return this.lastTrigger.source;
+            }
+            return null;
+        },
+        delete(key) {
+            delete this.data[key];
+            delete this.sources[key];
+            this.notify(key);
+        },
+        subscribe(callback) {
+            this.listeners.push(callback);
+            return () => this.listeners = this.listeners.filter(l => l !== callback);
+        },
+        notify(key) {
+            this.listeners.forEach(l => l(key));
+        }
+    };
+
+    // -------------------------------------------------------------------------
+    // CSS is now loaded from node-styles.css via index.css
+    // -------------------------------------------------------------------------
+
+    // -------------------------------------------------------------------------
+    // NODE CLASS
+    // -------------------------------------------------------------------------
+    class SenderNode extends ClassicPreset.Node {
+        constructor(changeCallback) {
+            super("Sender");
+            this.width = 250;
+            this.changeCallback = changeCallback;
+            this.addInput("in", new ClassicPreset.Input(sockets.any || new ClassicPreset.Socket('any'), "Input"));
+            this.properties = { bufferName: "Default", lastValue: null, registeredName: null };
+        }
+
+        data(inputs) {
+            const inputData = inputs.in?.[0];
+            
+            // Auto-detect type and prefix
+            let prefix = "[Unknown]";
+            if (typeof inputData === "boolean") prefix = "[Trigger]";
+            else if (typeof inputData === "number") prefix = "[Number]";
+            else if (typeof inputData === "string") prefix = "[String]";
+            else if (typeof inputData === "object" && inputData) {
+                if ('hue' in inputData && 'saturation' in inputData) prefix = "[HSV]";
+                else if (Array.isArray(inputData)) prefix = "[Array]";
+                else prefix = "[Object]";
+            }
+
+            // Clean existing prefix from user input if they typed it manually
+            let baseName = this.properties.bufferName.replace(/^\[.+\]/, "");
+            const finalName = `${prefix}${baseName}`;
+
+            // Update Buffer
+            if (inputData !== undefined) {
+                // Cleanup old name if it changed
+                if (this.properties.registeredName && this.properties.registeredName !== finalName) {
+                    if (window.AutoTronBuffer.delete) {
+                         window.AutoTronBuffer.delete(this.properties.registeredName);
+                    }
+                }
+
+                // Check if value actually changed before syncing to backend
+                const oldValue = window.AutoTronBuffer.get(finalName);
+                const valueChanged = JSON.stringify(oldValue) !== JSON.stringify(inputData);
+
+                // Store with source name (buffer name without type prefix for cleaner display)
+                window.AutoTronBuffer.set(finalName, inputData, baseName);
+                this.properties.lastValue = inputData;
+                this.properties.finalName = finalName; // Store for UI
+                this.properties.registeredName = finalName;
+                
+                // SYNC TO BACKEND: Only emit when value actually changes
+                // This prevents flooding the server with duplicate messages every tick
+                if (valueChanged && window.socket && window.socket.connected) {
+                    window.socket.emit('buffer-update', { 
+                        key: finalName, 
+                        value: inputData 
+                    });
+                }
+            }
+
+            return {};
+        }
+
+        restore(state) {
+            if (state.properties) {
+                this.properties.bufferName = state.properties.bufferName || "Default";
+            }
+        }
+
+        serialize() {
+            return {
+                bufferName: this.properties.bufferName
+            };
+        }
+
+        toJSON() {
+            return {
+                id: this.id,
+                label: this.label,
+                properties: this.serialize()
+            };
+        }
+    }
+
+    // -------------------------------------------------------------------------
+    // COMPONENT
+    // -------------------------------------------------------------------------
+    function SenderNodeComponent({ data, emit }) {
+        const [bufferName, setBufferName] = useState(data.properties.bufferName);
+        const [status, setStatus] = useState("Idle");
+
+        // Sync with properties
+        useEffect(() => {
+            data.properties.bufferName = bufferName;
+            // Trigger re-execution to update buffer name in system
+            if (data.changeCallback) data.changeCallback();
+        }, [bufferName, data]);
+
+        // Track if we have an active value
+        const [isActive, setIsActive] = useState(false);
+
+        // Poll for status update (since data() runs in engine)
+        useEffect(() => {
+            const interval = setInterval(() => {
+                if (data.properties.finalName) {
+                    setStatus(`Broadcasting: ${data.properties.finalName}`);
+                }
+                // Check if lastValue is "active"
+                const val = data.properties.lastValue;
+                const active = val === true || 
+                    (typeof val === 'number' && val !== 0) ||
+                    (typeof val === 'object' && val !== null && Object.keys(val).length > 0);
+                setIsActive(active);
+            }, 500);
+            return () => clearInterval(interval);
+        }, [data]);
+
+        // Use CSS class for active state styling
+        const activeClass = isActive ? 'sender-node-tron sender-active' : 'sender-node-tron';
+
+        return React.createElement('div', { 
+            className: activeClass
+        }, [
+            React.createElement('div', { 
+                key: 'header', 
+                className: 'sender-header',
+                style: { display: 'flex', alignItems: 'center', justifyContent: 'space-between' }
+            }, [
+                React.createElement('span', { key: 'title' }, "📡 Sender"),
+                HelpIcon && React.createElement(HelpIcon, { key: 'help', text: tooltips.node, size: 14 })
+            ]),
+            React.createElement('div', { key: 'content', className: 'sender-content' }, [
+                // Input Socket
+                React.createElement('div', { key: 'socket', className: 'sender-socket-row' }, [
+                    React.createElement(RefComponent, {
+                        key: 'ref',
+                        init: ref => emit({ type: "render", data: { type: "socket", element: ref, payload: data.inputs.in.socket, nodeId: data.id, side: "input", key: "in" } }),
+                        unmount: ref => emit({ type: "unmount", data: { element: ref } })
+                    }),
+                    React.createElement('span', { key: 'label', className: 'sender-label', style: { width: 'auto' } }, "Input"),
+                    HelpIcon && React.createElement(HelpIcon, { key: 'help', text: tooltips.inputs.in, size: 10 })
+                ]),
+                
+                // Buffer Name Input
+                React.createElement('div', { key: 'input', className: 'sender-input-row' }, [
+                    React.createElement('span', { key: 'label', className: 'sender-label' }, "Name:"),
+                    React.createElement('input', {
+                        key: 'field',
+                        className: 'sender-text-input',
+                        value: bufferName,
+                        onChange: (e) => setBufferName(e.target.value),
+                        placeholder: "Buffer Name"
+                    }),
+                    HelpIcon && React.createElement(HelpIcon, { key: 'help', text: tooltips.controls.name, size: 10 })
+                ]),
+
+                // Status
+                React.createElement('div', { key: 'status', className: 'sender-status' }, status)
+            ])
+        ]);
+    }
+
+    window.nodeRegistry.register('SenderNode', {
+        label: "Sender",
+        category: "Wireless",
+        nodeClass: SenderNode,
+        factory: (cb) => new SenderNode(cb),
+        component: SenderNodeComponent
+    });
+
+    // console.log("[SenderNode] Registered");
+})();

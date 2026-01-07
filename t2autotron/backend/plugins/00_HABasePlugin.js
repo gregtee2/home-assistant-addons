@@ -1,0 +1,523 @@
+(function() {
+    // Debug: console.log("[HABasePlugin] Loading shared...");
+
+    // -------------------------------------------------------------------------
+    // FILTER TYPE MAPPING - Normalizes filter dropdown values to entity types
+    // -------------------------------------------------------------------------
+    const filterTypeMap = {
+        "All": "all",
+        "Light": "light",
+        "Switch": "switch",
+        "Binary Sensor": "binary_sensor",
+        "Sensor": "sensor",
+        "Media Player": "media_player",
+        "Weather": "weather",
+        "Fan": "fan",
+        "Cover": "cover",
+        "Device Tracker": "device_tracker",
+        "Person": "person"
+    };
+
+    // -------------------------------------------------------------------------
+    // LETTER RANGES - For alphabetical filtering of device lists
+    // -------------------------------------------------------------------------
+    const letterRanges = {
+        "All Letters": null,
+        "ABC": ["A", "B", "C"],
+        "DEF": ["D", "E", "F"],
+        "GHI": ["G", "H", "I"],
+        "JKL": ["J", "K", "L"],
+        "MNO": ["M", "N", "O"],
+        "PQR": ["P", "Q", "R"],
+        "STU": ["S", "T", "U"],
+        "VWX": ["V", "W", "X"],
+        "YZ": ["Y", "Z"]
+    };
+
+    // -------------------------------------------------------------------------
+    // FIELD MAPPING - Available fields per entity type for automation nodes
+    // -------------------------------------------------------------------------
+    const fieldMapping = {
+        light: ["state", "hue", "saturation", "brightness"],
+        switch: ["state", "open"],
+        fan: ["state", "on", "percentage"],
+        cover: ["state", "position"],
+        media_player: ["state", "volume_level", "media_title", "media_content_type", "media_artist", "shuffle", "repeat", "supported_features"],
+        binary_sensor: ["state", "battery"],
+        sensor: ["value", "unit", "temperature", "pressure", "battery_level"],
+        weather: ["temperature", "humidity", "condition", "pressure", "wind_speed"],
+        device_tracker: ["state", "zone", "is_home", "latitude", "longitude"],
+        person: ["state", "zone", "is_home"],
+        unknown: ["state"]
+    };
+
+    // -------------------------------------------------------------------------
+    // AUXILIARY ENTITY PATTERNS - Patterns to filter out non-primary entities
+    // -------------------------------------------------------------------------
+    const auxiliaryPatterns = [
+        // Name-based patterns (at end of name)
+        / LED$/i,
+        / Auto-update enabled$/i,
+        / Firmware$/i,
+        / Restart$/i,
+        / Identify$/i,
+        / Power on behavior$/i,
+        / Signal strength$/i,
+        / Uptime$/i,
+        / Last seen$/i,
+        / Battery$/i,
+        / Temperature$/i,
+        / Link quality$/i,
+        / Update available$/i,
+        / OTA Progress$/i,
+        // entity_id patterns
+        /_update$/i,
+        /_led$/i,
+        /_identify$/i,
+        /_restart$/i,
+        /_firmware$/i,
+        // Broader patterns (anywhere in name)
+        /\bLED\b/i,
+        /\bAuto-update\b/i,
+        /\bCloud connection\b/i,
+        /\bOverheated\b/i,
+        /\bSignal\s+level\b/i,
+        /\bRestart\b/i,
+        /\bFirmware\b/i,
+        /\bSSID\b/i,
+        /\bIP\s*Address\b/i,
+        /\bMAC\s*Address\b/i,
+        /\bUptime\b/i,
+        /\bWi-?Fi\b/i
+    ];
+
+    // -------------------------------------------------------------------------
+    // UTILITY FUNCTIONS
+    // -------------------------------------------------------------------------
+
+    /**
+     * Check if a device name matches any auxiliary pattern
+     * @param {string} name - Device name to check
+     * @returns {boolean} - True if it's an auxiliary entity
+     */
+    function isAuxiliaryEntity(name) {
+        if (!name) return false;
+        return auxiliaryPatterns.some(pattern => pattern.test(name));
+    }
+
+    /**
+     * Get the correct API endpoint and clean ID for a device based on prefix
+     * @param {string} id - Device ID with prefix (ha_, kasa_, hue_)
+     * @returns {object|null} - { endpoint, cleanId } or null if invalid
+     */
+    function getDeviceApiInfo(id) {
+        if (!id) return null;
+        if (id.startsWith('ha_')) {
+            return { endpoint: '/api/lights/ha', cleanId: id.replace('ha_', ''), type: 'ha' };
+        } else if (id.startsWith('kasa_')) {
+            return { endpoint: '/api/lights/kasa', cleanId: id.replace('kasa_', ''), type: 'kasa' };
+        } else if (id.startsWith('hue_')) {
+            return { endpoint: '/api/lights/hue', cleanId: id.replace('hue_', ''), type: 'hue' };
+        }
+        // Default to HA endpoint for unrecognized prefixes
+        return { endpoint: '/api/lights/ha', cleanId: id, type: 'ha' };
+    }
+
+    /**
+     * Normalize device ID to internal format (with ha_ prefix)
+     * Handles: "light.xxx" -> "ha_light.xxx", "ha_light.xxx" -> "ha_light.xxx"
+     * @param {string} id - Device ID in any format
+     * @returns {string} - Normalized ID with ha_ prefix
+     */
+    function normalizeDeviceId(id) {
+        if (!id || typeof id !== 'string') return id;
+        if (id.startsWith('ha_') || id.startsWith('kasa_') || id.startsWith('hue_')) {
+            return id; // Already has prefix
+        }
+        // Assume HA entity if no prefix
+        return `ha_${id}`;
+    }
+
+    /**
+     * Strip device ID prefix for API calls
+     * Handles: "ha_light.xxx" -> "light.xxx", "light.xxx" -> "light.xxx"
+     * @param {string} id - Device ID with or without prefix
+     * @returns {string} - Raw entity ID for API calls
+     */
+    function stripDevicePrefix(id) {
+        if (!id || typeof id !== 'string') return id;
+        if (id.startsWith('ha_')) return id.slice(3);
+        if (id.startsWith('kasa_')) return id.slice(5);
+        if (id.startsWith('hue_')) return id.slice(4);
+        return id;
+    }
+
+    /**
+     * Check if two device IDs refer to the same device (ignoring prefix differences)
+     * @param {string} id1 - First device ID
+     * @param {string} id2 - Second device ID
+     * @returns {boolean} - True if they're the same device
+     */
+    function isSameDevice(id1, id2) {
+        if (!id1 || !id2) return false;
+        return stripDevicePrefix(id1) === stripDevicePrefix(id2);
+    }
+
+    /**
+     * Compare device names alphabetically (case-insensitive)
+     * @param {string} a - First name
+     * @param {string} b - Second name
+     * @returns {number} - Comparison result
+     */
+    function compareNames(a = "", b = "") {
+        return a.localeCompare(b, undefined, { sensitivity: "base" });
+    }
+
+    /**
+     * Format UTC time to local time string
+     * @param {string} utcTime - UTC time string
+     * @returns {string} - Formatted local time
+     */
+    function formatTime(utcTime) {
+        if (!utcTime || typeof utcTime !== "string") return "Invalid";
+        try {
+            const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            const date = new Date(utcTime.endsWith("Z") ? utcTime : `${utcTime}Z`);
+            if (isNaN(date.getTime())) return "Invalid";
+            return date.toLocaleTimeString("en-US", { 
+                hour: "numeric", 
+                minute: "numeric", 
+                hour12: true, 
+                timeZone: userTimeZone 
+            });
+        } catch (error) {
+            return utcTime;
+        }
+    }
+
+    /**
+     * Filter devices by type and letter range
+     * @param {Array} devices - Array of device objects with name and entityType
+     * @param {string} filterType - Type filter (All, Light, Switch, etc.)
+     * @param {string} letterFilter - Letter range filter (All Letters, ABC, etc.)
+     * @param {boolean} includeAuxiliary - Whether to include auxiliary entities
+     * @returns {Array} - Filtered devices
+     */
+    function filterDevices(devices, filterType = "All", letterFilter = "All Letters", includeAuxiliary = false) {
+        if (!Array.isArray(devices)) return [];
+        
+        const normalizedFilterType = filterTypeMap[filterType] || "all";
+        
+        let filtered = devices.filter(device => {
+            // Filter out auxiliary entities unless explicitly included
+            if (!includeAuxiliary && isAuxiliaryEntity(device.name)) {
+                return false;
+            }
+            
+            // Type filter
+            if (normalizedFilterType !== "all") {
+                const deviceType = device.entityType || device.type || "unknown";
+                
+                // Special handling: Switch filter includes switch, plug, and light
+                if (normalizedFilterType === "switch") {
+                    if (!["switch", "plug", "light"].includes(deviceType)) {
+                        return false;
+                    }
+                }
+                // Light filter also includes switch and plug (for Kasa dimmers)
+                else if (normalizedFilterType === "light") {
+                    if (!["light", "switch", "plug"].includes(deviceType)) {
+                        return false;
+                    }
+                }
+                else if (deviceType !== normalizedFilterType) {
+                    return false;
+                }
+            }
+            
+            return true;
+        });
+        
+        // Letter filter
+        if (letterFilter && letterFilter !== "All Letters") {
+            const range = letterRanges[letterFilter];
+            if (range) {
+                filtered = filtered.filter(device => {
+                    const firstLetter = (device.name || "").charAt(0).toUpperCase();
+                    return range.includes(firstLetter);
+                });
+            }
+        }
+        
+        return filtered;
+    }
+
+    /**
+     * Normalize HA device data to consistent format
+     * @param {object} device - Raw device from API
+     * @returns {object} - Normalized device object
+     */
+    function normalizeHADevice(device) {
+        const entityType = device.type || "unknown";
+        let state = "unknown";
+        let attributes = {};
+        
+        switch (entityType) {
+            case "binary_sensor":
+                state = device.state?.on ? "on" : "off";
+                attributes = { battery: "unknown" };
+                break;
+            case "sensor":
+                state = device.state?.value || device.state?.state || "unknown";
+                attributes = { unit: device.state?.unit || "" };
+                break;
+            case "light":
+            case "switch":
+                state = device.state?.on ? "on" : "off";
+                attributes = { 
+                    brightness: device.state?.brightness || (device.state?.on ? 100 : 0), 
+                    hs_color: device.state?.hs_color || [0, 0] 
+                };
+                break;
+            case "media_player":
+                state = device.state?.state || "off";
+                attributes = { 
+                    volume_level: device.state?.volume_level || 0, 
+                    source: device.state?.source || null 
+                };
+                break;
+            case "weather":
+                state = device.state?.condition || "unknown";
+                attributes = { 
+                    temperature: device.state?.temperature || null, 
+                    humidity: device.state?.humidity || null 
+                };
+                break;
+            case "fan":
+                state = device.state?.on ? "on" : "off";
+                attributes = { percentage: device.state?.percentage || 0 };
+                break;
+            case "cover":
+                state = device.state?.on ? "open" : "closed";
+                attributes = { position: device.state?.position || 0 };
+                break;
+        }
+        
+        return {
+            entity_id: device.id?.replace("ha_", "") || device.entity_id,
+            id: device.id,
+            name: (device.name || "").trim(),
+            entityType,
+            state,
+            attributes
+        };
+    }
+
+    /**
+     * Get fields available for a given entity type
+     * @param {string} entityType - Entity type (light, switch, etc.)
+     * @returns {Array} - Array of available field names
+     */
+    function getFieldsForEntityType(entityType) {
+        return fieldMapping[entityType] || fieldMapping.unknown;
+    }
+
+    /**
+     * Create a debug logger function for a node
+     * @param {string} nodeName - Name of the node for log prefix
+     * @param {object} properties - Node properties object (checks properties.debug)
+     * @returns {function} - Logger function (key, message, force)
+     */
+    function createLogger(nodeName, properties) {
+        return function(key, message, force = false) {
+            if (!properties.debug && !force) return;
+            console.log(`[${nodeName}] ${key}: ${message}`);
+        };
+    }
+
+    // -------------------------------------------------------------------------
+    // SOCKET.IO HELPERS
+    // -------------------------------------------------------------------------
+
+    /**
+     * Initialize socket.io listeners for device state updates
+     * @param {object} node - The node instance
+     * @param {function} onDeviceStateUpdate - Callback for device state updates
+     * @param {function} onConnect - Callback for socket connect (usually fetchDevices)
+     */
+    function initializeSocketListeners(node, onDeviceStateUpdate, onConnect) {
+        if (!window.socket) return;
+        
+        // Store handlers for cleanup
+        node._onDeviceStateUpdate = onDeviceStateUpdate;
+        node._onConnect = onConnect;
+        
+        window.socket.on("device-state-update", node._onDeviceStateUpdate);
+        window.socket.on("connect", node._onConnect);
+    }
+
+    /**
+     * Remove socket.io listeners (call in node destroy)
+     * @param {object} node - The node instance
+     */
+    function removeSocketListeners(node) {
+        if (!window.socket) return;
+        
+        if (node._onDeviceStateUpdate) {
+            window.socket.off("device-state-update", node._onDeviceStateUpdate);
+        }
+        if (node._onConnect) {
+            window.socket.off("connect", node._onConnect);
+        }
+    }
+
+    // -------------------------------------------------------------------------
+    // GLOBAL DEVICE CACHE - Shared across all HA nodes
+    // -------------------------------------------------------------------------
+    const deviceCache = {
+        devices: [],           // Flat array of all devices
+        byPrefix: {},          // { ha: [...], kasa: [...], hue: [...] }
+        lastUpdate: null,
+        listeners: new Set(),  // Callbacks to notify on update
+        initialized: false
+    };
+
+    /**
+     * Initialize the global device cache and socket listener
+     * Only runs once, all nodes share the same cache
+     */
+    function initializeDeviceCache() {
+        if (deviceCache.initialized || typeof window === 'undefined' || !window.socket) return;
+        deviceCache.initialized = true;
+
+        // Listen for device list updates from server
+        window.socket.on('device-list-update', (data) => {
+            // console.log('[T2HAUtils] Received device-list-update:', Object.keys(data));
+            deviceCache.byPrefix = data;
+            
+            // Flatten into single array with normalized format
+            const allDevices = [];
+            for (const [prefix, devices] of Object.entries(data)) {
+                if (!Array.isArray(devices)) continue;
+                devices.forEach(d => {
+                    let deviceType = d.type;
+                    if (!deviceType && d.id?.includes('.')) {
+                        deviceType = d.id.split('.')[0].replace(/^(ha_|kasa_|hue_)/, '');
+                    }
+                    allDevices.push({
+                        ...d,
+                        type: deviceType || 'unknown',
+                        source: prefix.replace('_', '')
+                    });
+                });
+            }
+            
+            deviceCache.devices = allDevices.sort((a, b) => compareNames(a.name || a.id, b.name || b.id));
+            deviceCache.lastUpdate = Date.now();
+            
+            // Notify all registered listeners
+            deviceCache.listeners.forEach(callback => {
+                try { callback(deviceCache.devices); } catch (e) { console.error('[T2HAUtils] Cache listener error:', e); }
+            });
+        });
+
+        // Request devices when socket connects/reconnects
+        window.socket.on('connect', () => {
+            // Server auto-sends device-list-update after auth, but request anyway for reconnects
+            setTimeout(() => window.socket.emit('request-devices'), 500);
+        });
+
+        // Request initial device list if already connected
+        if (window.socket.connected) {
+            window.socket.emit('request-devices');
+        }
+    }
+
+    /**
+     * Get cached devices (returns immediately, may be empty on first call)
+     * @returns {Array} - Array of all devices
+     */
+    function getCachedDevices() {
+        // Lazy init - first node to call this sets up the listener
+        initializeDeviceCache();
+        return deviceCache.devices;
+    }
+
+    /**
+     * Get cached devices by prefix (ha, kasa, hue, shelly)
+     * @returns {object} - { ha: [...], kasa: [...], ... }
+     */
+    function getCachedDevicesByPrefix() {
+        initializeDeviceCache();
+        return deviceCache.byPrefix;
+    }
+
+    /**
+     * Register a callback to be notified when device cache updates
+     * @param {function} callback - Called with (devices) array
+     * @returns {function} - Unsubscribe function
+     */
+    function onDeviceCacheUpdate(callback) {
+        initializeDeviceCache();
+        deviceCache.listeners.add(callback);
+        // Return unsubscribe function
+        return () => deviceCache.listeners.delete(callback);
+    }
+
+    /**
+     * Request fresh device list from server (via socket)
+     * All nodes will receive the update via their registered callbacks
+     */
+    function requestDeviceRefresh() {
+        if (window.socket?.connected) {
+            window.socket.emit('request-devices');
+        }
+    }
+
+    /**
+     * Check if device cache has data
+     * @returns {boolean}
+     */
+    function hasDeviceCache() {
+        return deviceCache.devices.length > 0;
+    }
+
+    // -------------------------------------------------------------------------
+    // EXPORT TO GLOBAL SCOPE
+    // -------------------------------------------------------------------------
+    window.T2HAUtils = {
+        // Constants
+        filterTypeMap,
+        letterRanges,
+        fieldMapping,
+        auxiliaryPatterns,
+        
+        // Utility functions
+        isAuxiliaryEntity,
+        getDeviceApiInfo,
+        compareNames,
+        formatTime,
+        filterDevices,
+        normalizeHADevice,
+        getFieldsForEntityType,
+        createLogger,
+        
+        // ID normalization helpers (IMPORTANT: Use these to avoid ID format mismatches!)
+        normalizeDeviceId,   // Ensures ha_ prefix: "light.xxx" -> "ha_light.xxx"
+        stripDevicePrefix,   // Removes prefix for API: "ha_light.xxx" -> "light.xxx"
+        isSameDevice,        // Compares ignoring prefix: isSameDevice("ha_light.x", "light.x") = true
+        
+        // Socket.io helpers
+        initializeSocketListeners,
+        removeSocketListeners,
+        
+        // Device cache (shared across all nodes)
+        getCachedDevices,
+        getCachedDevicesByPrefix,
+        onDeviceCacheUpdate,
+        requestDeviceRefresh,
+        hasDeviceCache
+    };
+
+    // console.log("[HABasePlugin] T2HAUtils loaded with:", Object.keys(window.T2HAUtils).join(", "));
+})();
