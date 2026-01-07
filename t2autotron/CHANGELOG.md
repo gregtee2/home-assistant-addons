@@ -1,3 +1,10 @@
+## [2.1.223] - 2026-01-07
+### Added
+- **Chatterbox URL config option**: Addon can now point to a remote Chatterbox TTS server
+  - Add `chatterbox_url` in addon configuration (e.g., `http://192.168.1.47:8100`)
+  - Allows Pi addon to use Chatterbox running on a more powerful desktop machine
+  - Leave empty to use default localhost (if running Chatterbox locally)
+
 ## [2.1.222] - 2026-01-07
 ### Fixed
 - **HADeviceFieldNode missing from backend engine**: Timeline Color nodes using HA sensor values (temperature, humidity, etc.) were stuck on default colors in headless mode

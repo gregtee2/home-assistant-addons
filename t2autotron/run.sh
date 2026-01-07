@@ -18,6 +18,7 @@ if [ -f "$CONFIG_PATH" ]; then
     TELEGRAM_CHAT_ID=$(jq -r '.telegram_chat_id // ""' $CONFIG_PATH)
     HUE_BRIDGE_IP=$(jq -r '.hue_bridge_ip // ""' $CONFIG_PATH)
     HUE_USERNAME=$(jq -r '.hue_username // ""' $CONFIG_PATH)
+    CHATTERBOX_URL=$(jq -r '.chatterbox_url // ""' $CONFIG_PATH)
 else
     echo "Note: Running without Home Assistant options file (local testing mode)"
     LOG_LEVEL="${LOG_LEVEL:-info}"
@@ -55,6 +56,7 @@ export VERBOSE_LOGGING=$([ "$LOG_LEVEL" = "debug" ] && echo "true" || echo "fals
 [ -n "$TELEGRAM_CHAT_ID" ] && export TELEGRAM_CHAT_ID
 [ -n "$HUE_BRIDGE_IP" ] && export HUE_BRIDGE_IP
 [ -n "$HUE_USERNAME" ] && export HUE_USERNAME
+[ -n "$CHATTERBOX_URL" ] && export CHATTERBOX_URL
 
 # Create data directory for persistent storage
 mkdir -p /data/graphs
