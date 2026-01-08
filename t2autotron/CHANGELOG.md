@@ -1,3 +1,12 @@
+## [2.1.233] - 2026-01-07
+### Improved
+- **Chatterbox TTS Setup Guide**: Added step-by-step setup instructions in the ChatterboxPanel
+  - Shows when agent is not running to help users get started
+  - Includes settings to configure and ad blocker warning
+- **Moved PUBLIC_URL to Chatterbox TTS section** in Settings (was under ElevenLabs)
+  - Better hints: shows correct URL for addon vs desktop mode
+  - Chatterbox Server and Audio URL now grouped together
+
 ## [2.1.232] - 2026-01-07
 ### Added
 - **Version display in Control Panel**: Header now shows running version (e.g., "v2.1.232")
