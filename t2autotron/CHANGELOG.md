@@ -1,3 +1,8 @@
+## [2.1.232] - 2026-01-07
+### Added
+- **Version display in Control Panel**: Header now shows running version (e.g., "v2.1.232")
+  - Helps users verify which version is actually running after updates
+
 ## [2.1.231] - 2026-01-07
 ### Added
 - **TTS audio served via HA /local/ path**: Audio files now saved to `/config/www/tts/` in addon mode
