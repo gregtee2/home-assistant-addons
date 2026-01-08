@@ -1,3 +1,18 @@
+## [2.1.225] - 2026-01-07
+### Added
+- **ChatterboxPanel in Control Panel**: New collapsible panel for controlling local Chatterbox TTS
+  - Shows agent status (running/stopped) when Local Agent is running
+  - Start/Stop buttons to control Chatterbox process
+  - Download links for t2_agent.py and start_agent.bat when agent not running
+  - Allows addon users to control Chatterbox running on their desktop
+
+## [2.1.224] - 2026-01-07
+### Added
+- **Local Agent for Chatterbox control**: Python HTTP server that lets addon control Chatterbox
+  - New endpoint: `/api/agent/download/:file` for downloading agent files
+  - t2_agent.py - Standalone Python server (runs on desktop, controls local Chatterbox)
+  - start_agent.bat - Windows batch file to launch the agent
+
 ## [2.1.223] - 2026-01-07
 ### Added
 - **Chatterbox URL config option**: Addon can now point to a remote Chatterbox TTS server
