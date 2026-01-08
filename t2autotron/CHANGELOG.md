@@ -1,3 +1,15 @@
+## [2.1.231] - 2026-01-07
+### Added
+- **TTS audio served via HA /local/ path**: Audio files now saved to `/config/www/tts/` in addon mode
+  - HomePod and other speakers can now fetch TTS audio without authentication
+  - Added `map: config:rw` volume mount to access HA config folder
+  - Set PUBLIC_URL to `http://homeassistant.local:8123` for this to work
+
+## [2.1.230] - 2026-01-07
+### Fixed
+- **Agent download URLs for ingress**: Download buttons now use `apiUrl()` for proper ingress path handling
+  - Files download correctly when accessing T2 through HA ingress proxy
+
 ## [2.1.229] - 2026-01-07
 ### Fixed
 - **Agent download endpoint missing**: The `/api/agent/download/:file` endpoint was not implemented, causing download buttons to fail
