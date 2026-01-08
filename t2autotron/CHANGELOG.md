@@ -1,3 +1,9 @@
+## [2.1.229] - 2026-01-07
+### Fixed
+- **Agent download endpoint missing**: The `/api/agent/download/:file` endpoint was not implemented, causing download buttons to fail
+  - Added `agentRoutes.js` to serve `t2_agent.py` and `start_agent.bat` files
+  - Files now download properly from the ChatterboxPanel
+
 ## [2.1.225] - 2026-01-07
 ### Added
 - **ChatterboxPanel in Control Panel**: New collapsible panel for controlling local Chatterbox TTS
