@@ -1,3 +1,11 @@
+## [2.1.237] - 2026-01-12
+### Fixed
+- **Color mismatch during frontend/backend handoff**: When browser closes and backend takes over, colors now sync immediately
+  - Problem: Timeline colors advance continuously, but after handoff devices kept the old frontend color
+  - Backend was waiting for "significant change" before sending, causing visible color gaps
+  - Added `forceHsvResync()` that clears throttle state on all device nodes during handoff
+  - Devices now immediately update to current timeline color when backend takes over
+
 ## [2.1.236] - 2026-01-09
 ### Added
 - **HAThermostatNode**: New node for controlling Home Assistant climate/thermostat entities
