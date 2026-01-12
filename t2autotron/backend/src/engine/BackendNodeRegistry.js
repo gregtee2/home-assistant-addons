@@ -139,6 +139,8 @@ class BackendNodeRegistry {
       'HA Lock Control': 'HALockNode',
       'HA Device Field': 'HADeviceFieldNode',  // Field extractor for Timeline Color inputs
       'Device State': 'HADeviceStateNode',
+      'Thermostat': 'HAThermostatNode',
+      'HA Thermostat': 'HAThermostatNode',
       
       // Device nodes
       'Hue Light': 'HueLightNode',
@@ -168,6 +170,19 @@ class BackendNodeRegistry {
       'Sub-Graph': 'SubGraphNode',
       'TTS Message Scheduler': 'TTSMessageSchedulerNode',
       'Event Announcer': null,  // Frontend-only (manages UI scheduled events display)
+      
+      // String nodes
+      'String Concat': 'StringConcatNode',
+      'Text String': 'TextStringNode',
+      
+      // Schedule nodes
+      'Station Schedule': 'StationScheduleNode',
+      
+      // Effect nodes
+      'WiZ Effect': 'WizEffectNode',
+      
+      // Logic nodes
+      'Priority Encoder': 'PriorityEncoderNode',
       
       // Buffer/wireless connection nodes - MUST run on backend
       'Sender': 'SenderNode',

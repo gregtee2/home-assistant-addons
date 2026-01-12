@@ -1201,6 +1201,10 @@ app.use('/api/audio', audioRoutes);
 const createMediaRoutes = require('./api/routes/mediaRoutes');
 app.use('/api/media', createMediaRoutes(io));
 
+// Shared logic routes (serves ColorLogic, etc. to frontend plugins)
+const sharedLogicRoutes = require('./api/routes/sharedLogicRoutes');
+app.use('/api/shared-logic', sharedLogicRoutes);
+
 // Initialize DeviceService
 debug('Initializing DeviceService...');
 async function initializeDeviceService() {

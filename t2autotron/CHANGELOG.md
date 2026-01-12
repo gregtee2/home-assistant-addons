@@ -1,3 +1,30 @@
+## [2.1.236] - 2026-01-09
+### Added
+- **HAThermostatNode**: New node for controlling Home Assistant climate/thermostat entities
+  - Supports Nest, Ecobee, Honeywell, and any HA climate entity
+  - Visual temperature ring display with current/target temperatures
+  - Mode buttons: Off, Heat, Cool, Auto
+  - Temperature slider with live updates
+  - Real-time state updates via Socket.IO
+  - Inputs: target_temp (number), hvac_mode (string) for automation
+  - Outputs: current_temp, target_temp_out, hvac_mode_out, hvac_action, humidity
+  - Backend engine support for 24/7 operation
+  - Comprehensive tooltips for all inputs/outputs
+
+## [2.1.234] - 2026-01-09
+### Added
+- **Oklab Color Space**: Timeline Color node now uses Oklab interpolation for perceptually uniform gradients
+  - Red→Green transitions go through vibrant yellows instead of muddy browns
+  - Canvas preview and actual output both use Oklab for consistency
+  - Falls back to RGB if shared logic not available
+- **Shared Logic Infrastructure**: Added `/api/shared-logic/` endpoint and loader plugin
+  - Frontend plugins can now use same calculation functions as backend
+  - ColorLogic.js now includes `rgbToOklab`, `oklabToRgb`, `mixColorsOklab`
+
+### Fixed
+- **ColorLogic.js property names**: `rgbToHsv()` now returns both `{h,s,v}` and `{hue,sat,val}` for backwards compatibility
+  - Fixes saturation:null bug in Timeline Color custom mode
+
 ## [2.1.233] - 2026-01-07
 ### Improved
 - **Chatterbox TTS Setup Guide**: Added step-by-step setup instructions in the ChatterboxPanel
