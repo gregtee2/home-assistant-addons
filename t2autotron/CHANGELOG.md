@@ -1,3 +1,8 @@
+## [2.1.241] - 2026-03-13
+### Changed
+- **Rollback to v2.1.237 codebase** for addon stability
+- Versions 2.1.238-2.1.240 (security hardening, logging, tests) need more local testing before addon deployment
+
 ## [2.1.237] - 2026-01-12
 ### Fixed
 - **Color mismatch during frontend/backend handoff**: When browser closes and backend takes over, colors now sync immediately
