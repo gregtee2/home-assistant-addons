@@ -1,3 +1,9 @@
+## [2.1.242] - 2026-06-13
+### Fixed
+- **HA Generic Device HSV safety**: Color/HSV updates now verify the current Home Assistant state before sending `turn_on` with color data
+  - Prevents stale internal state from turning scheduled-off lights back on overnight
+  - Applies to both backend/headless engine control and browser-side node control
+
 ## [2.1.241] - 2026-03-13
 ### Changed
 - **Rollback to v2.1.237 codebase** for addon stability
