@@ -66,13 +66,10 @@ export GRAPH_SAVE_PATH=/data/graphs
 # Enable auto-start of backend engine
 export ENGINE_AUTOSTART=true
 
-# Load settings from T2AutoTron Settings UI (persisted to /data/.env)
-# These override the add-on config options if set
+# The Node server parses settings from /data/.env with dotenv. Do not source
+# this file: settings are user-controlled data, not shell code.
 if [ -f /data/.env ]; then
-    echo "Loading settings from /data/.env (T2AutoTron Settings UI)"
-    set -a
-    source /data/.env
-    set +a
+    echo "Settings file found at /data/.env (parsed by the Node server)"
 fi
 
 # Start the server
