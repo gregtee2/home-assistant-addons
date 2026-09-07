@@ -9,7 +9,7 @@ WORKDIR /build
 # Clone the main T2AutoTron repository
 # ARG before RUN forces cache invalidation when version changes
 ARG T2AUTOTRON_VERSION=stable
-ARG BUILD_VERSION=2.1.243
+ARG BUILD_VERSION=2.1.242
 RUN echo "Building version ${BUILD_VERSION} from ${T2AUTOTRON_VERSION}" && \
     git clone --depth 1 --branch ${T2AUTOTRON_VERSION} https://github.com/gregtee2/T2AutoTron.git .
 
@@ -51,6 +51,6 @@ LABEL \
     io.hass.name="T2AutoTron" \
     io.hass.description="Visual node-based smart home automation editor" \
     io.hass.type="addon" \
-    io.hass.version="2.1.243"
+    io.hass.version="2.1.242"
 
 CMD ["/run.sh"]

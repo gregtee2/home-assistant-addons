@@ -1,8 +1,3 @@
-## [2.1.243] - 2026-09-06
-### Fixed
-- Hardened add-on authentication, graph persistence, Home Assistant reconnect handling, and runtime lifecycle.
-- Added reliable subgraph execution, bounded logging, camera configuration migration, and reproducible Node 22 builds.
-
 ## [2.1.242] - 2026-06-13
 ### Fixed
 - **HA Generic Device HSV safety**: Color/HSV updates now verify the current Home Assistant state before sending `turn_on` with color data
