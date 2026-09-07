@@ -1,3 +1,8 @@
+## [2.1.244] - 2026-09-06
+### Changed
+- Rollback release to the previous 2.1.242 implementation for troubleshooting.
+- The 2.1.243 runtime hardening changes are temporarily reverted while the Kasa/HA regression is investigated.
+
 ## [2.1.242] - 2026-06-13
 ### Fixed
 - **HA Generic Device HSV safety**: Color/HSV updates now verify the current Home Assistant state before sending `turn_on` with color data
