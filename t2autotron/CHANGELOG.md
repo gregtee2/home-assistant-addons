@@ -1,3 +1,7 @@
+## [2.1.247] - 2026-09-15
+### Fixed
+- Include the shared logic directory in the container image. This fixes startup failure with `Cannot find module '../../../shared/logic/DeviceLogic'` and restores the Home Assistant ingress UI.
+
 ## [2.1.246] - 2026-09-15
 ### Fixed
 - Bind the web listener before slow device, weather, camera, and backend-engine startup so Home Assistant ingress can load the UI while integrations initialize.

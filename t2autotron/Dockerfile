@@ -9,7 +9,7 @@ WORKDIR /build
 # Clone the main T2AutoTron repository
 # ARG before RUN forces cache invalidation when version changes
 ARG T2AUTOTRON_VERSION=stable
-ARG BUILD_VERSION=2.1.246
+ARG BUILD_VERSION=2.1.247
 RUN echo "Building version ${BUILD_VERSION}" && \
     git clone --depth 1 --branch ${T2AUTOTRON_VERSION} https://github.com/gregtee2/T2AutoTron.git .
 
@@ -33,6 +33,10 @@ WORKDIR /app
 # Copy backend with dependencies
 COPY --from=builder /build/v3_migration/backend ./backend/
 
+# Shared calculation logic is required by backend engine and device managers.
+# These modules live beside v3_migration in the source repository.
+COPY --from=builder /build/shared ./shared/
+
 # Copy built frontend to backend's static folder
 COPY --from=builder /build/v3_migration/frontend/dist ./backend/frontend/
 
@@ -48,6 +52,6 @@ LABEL \
     io.hass.name="T2AutoTron" \
     io.hass.description="Visual node-based smart home automation editor" \
     io.hass.type="addon" \
-    io.hass.version="2.1.246"
+    io.hass.version="2.1.247"
 
 CMD ["/run.sh"]
