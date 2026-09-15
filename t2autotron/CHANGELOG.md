@@ -1,3 +1,7 @@
+## [2.1.246] - 2026-09-15
+### Fixed
+- Bind the web listener before slow device, weather, camera, and backend-engine startup so Home Assistant ingress can load the UI while integrations initialize.
+
 ## [2.1.245] - 2026-09-15
 ### Fixed
 - **HA Generic external override handling**: manual ON/OFF changes made in Home Assistant are now respected when Enforce State is disabled.
