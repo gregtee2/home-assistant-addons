@@ -38,6 +38,36 @@
         { name: 'Jazz24', url: 'https://live.wostreaming.net/direct/ppm-jazz24aac-ibc1' }
     ];
 
+    class SpeakerCommandCoordinator {
+        constructor() {
+            this.stationGenerations = new Map();
+            this.volumeTimers = new Map();
+        }
+
+        beginStationChange(speakerId) {
+            const generation = (this.stationGenerations.get(speakerId) || 0) + 1;
+            this.stationGenerations.set(speakerId, generation);
+            return () => this.stationGenerations.get(speakerId) === generation;
+        }
+
+        queueVolume(speakerId, volume, sendVolume, delay = 150) {
+            const existingTimer = this.volumeTimers.get(speakerId);
+            if (existingTimer) clearTimeout(existingTimer);
+
+            const timer = setTimeout(() => {
+                this.volumeTimers.delete(speakerId);
+                sendVolume(volume);
+            }, delay);
+            this.volumeTimers.set(speakerId, timer);
+        }
+
+        clear() {
+            this.volumeTimers.forEach(timer => clearTimeout(timer));
+            this.volumeTimers.clear();
+            this.stationGenerations.clear();
+        }
+    }
+
     // Tooltips
     const tooltips = {
         node: "Combined TTS + Streaming: Play background music, interrupt for announcements, then resume. Like a DJ booth for your smart home.",
@@ -121,8 +151,8 @@
 
             // Inputs
             this.addInput('trigger', new ClassicPreset.Input(sockets.boolean, 'Trigger'));
-            this.addInput('message', new ClassicPreset.Input(sockets.any, 'Message'));
-            this.addInput('streamUrl', new ClassicPreset.Input(sockets.any, 'Stream URL'));
+            this.addInput('message', new ClassicPreset.Input(sockets.string, 'Message'));
+            this.addInput('streamUrl', new ClassicPreset.Input(sockets.string, 'Stream URL'));
             // Dynamic per-speaker inputs (volume, active, station) added via updateVolumeInputs()
 
             // Outputs
@@ -138,6 +168,7 @@
             this._stationInputKeys = []; // Track dynamic station input keys
             this._lastActiveStates = {}; // Track last active state per speaker for edge detection
             this._lastStationInputs = {}; // Track last station input values for edge detection ("last write wins")
+            this._speakerCommands = new SpeakerCommandCoordinator();
             
             // Lock to prevent duplicate play commands (fixes AirPlay "already streaming" error)
             this._playInProgress = false;
@@ -368,11 +399,31 @@
             console.log(`[AudioOutput] 📻 Set station ${stationIndex} for ${speakerId}`);
         }
 
+        async queueStationChange(speakerId, streamUrl) {
+            const isCurrent = this._speakerCommands.beginStationChange(speakerId);
+            return this.playSingleSpeaker(
+                speakerId,
+                streamUrl,
+                1,
+                true,
+                isCurrent
+            );
+        }
+
+        queueVolumeChange(speakerId, volume) {
+            this._speakerCommands.queueVolume(
+                speakerId,
+                volume,
+                latestVolume => this.setVolume(speakerId, latestVolume)
+            );
+        }
+
         // Helper: play stream on single speaker with retry
-        async playSingleSpeaker(speaker, streamUrl, attempt = 1, forceStop = false) {
+        async playSingleSpeaker(speaker, streamUrl, attempt = 1, forceStop = false, shouldContinue = () => true) {
             const maxAttempts = 2;
             const volume = this.getSpeakerVolume(speaker);
             try {
+                if (!shouldContinue()) return false;
                 // If forceStop is true, stop the current stream first (helps with station changes)
                 if (forceStop) {
                     console.log(`[AudioOutput] ⏹️ Force-stopping ${speaker} before starting new stream`);
@@ -383,8 +434,10 @@
                     });
                     // Brief delay to let the stop command complete
                     await new Promise(r => setTimeout(r, 300));
+                    if (!shouldContinue()) return false;
                 }
                 
+                if (!shouldContinue()) return false;
                 const response = await (window.apiFetch || fetch)('/api/media/play', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -402,7 +455,7 @@
                     console.warn(`[AudioOutput] ✗ Failed ${speaker}: HTTP ${response.status} (attempt ${attempt})`);
                     if (attempt < maxAttempts) {
                         await new Promise(r => setTimeout(r, 1000)); // Wait 1s before retry
-                        return this.playSingleSpeaker(speaker, streamUrl, attempt + 1, false);
+                        return this.playSingleSpeaker(speaker, streamUrl, attempt + 1, false, shouldContinue);
                     }
                     return false;
                 }
@@ -410,7 +463,7 @@
                 console.error(`[AudioOutput] ✗ Error on ${speaker}: ${err.message} (attempt ${attempt})`);
                 if (attempt < maxAttempts) {
                     await new Promise(r => setTimeout(r, 1000));
-                    return this.playSingleSpeaker(speaker, streamUrl, attempt + 1, false);
+                    return this.playSingleSpeaker(speaker, streamUrl, attempt + 1, false, shouldContinue);
                 }
                 return false;
             }
@@ -1298,13 +1351,18 @@
                 if (volumeInput !== undefined && volumeInput !== null) {
                     const vol = Math.max(0, Math.min(100, Math.round(volumeInput)));
                     const currentVol = this.getSpeakerVolume(speakerId);
+                    const stationInputKey = `station_${speakerId.replace('media_player.', '')}`;
+                    const stationInput = inputs[stationInputKey]?.[0];
+                    const stationWillChange = stationInput !== undefined &&
+                        stationInput !== null &&
+                        stationInput !== this._lastStationInputs?.[speakerId];
                     // Update if changed OR if we need to force-sync after restore
                     if (vol !== currentVol || forceVolumeSync) {
                         if (forceVolumeSync) {
                             console.log(`[AudioOutput] 🔄 Force-syncing volume ${vol}% to ${speakerId}`);
                         }
                         this.setSpeakerVolume(speakerId, vol);
-                        this.setVolume(speakerId, vol);
+                        if (!stationWillChange) this.queueVolumeChange(speakerId, vol);
                         syncedAnyVolume = true;
                     }
                 }
@@ -1398,9 +1456,9 @@
                         this.properties.speakerCustomUrls[speakerId] = customUrl;
                         console.log(`[AudioOutput] 📻 Station input changed: Custom URL for ${speakerId}`);
                         // Restart stream if playing
-                        const speakerIsPlaying = this.properties.isStreaming || this._lastActiveStates?.[speakerId];
+                        const speakerIsPlaying = this.properties.streamEnabled || this.properties.isStreaming || this._lastActiveStates?.[speakerId];
                         if (speakerIsPlaying) {
-                            this.playSingleSpeaker(speakerId, customUrl, 1, true); // forceStop=true for station change
+                            this.queueStationChange(speakerId, customUrl);
                         }
                     } else if (stationIndex !== null) {
                         // Clear any custom URL
@@ -1410,14 +1468,14 @@
                         this.setSpeakerStation(speakerId, stationIndex);
                         
                         // Check if this speaker is actively playing (via automation OR global stream)
-                        const speakerIsPlaying = this.properties.isStreaming || this._lastActiveStates?.[speakerId];
+                        const speakerIsPlaying = this.properties.streamEnabled || this.properties.isStreaming || this._lastActiveStates?.[speakerId];
                         console.log(`[AudioOutput] 📻 Station input changed to ${stationIndex} for ${speakerId}, playing=${speakerIsPlaying}`);
                         
                         // Restart stream if this speaker is playing - use forceStop to ensure station change takes effect
                         if (speakerIsPlaying) {
                             const streamUrl = this.getStreamUrlForSpeaker(speakerId);
                             console.log(`[AudioOutput] 📻 Switching to: ${streamUrl}`);
-                            this.playSingleSpeaker(speakerId, streamUrl, 1, true); // forceStop=true for station change
+                            this.queueStationChange(speakerId, streamUrl);
                         }
                     }
                 }
@@ -2339,32 +2397,52 @@
             }
         };
 
-        // Render sockets
-        const renderInputs = () => {
-            return Object.entries(data.inputs || {}).map(([key, input]) => {
+        // Render sockets - when collapsed, stack them at same position for bundled wire effect
+        const renderInputs = (collapsed = false) => {
+            return Object.entries(data.inputs || {}).map(([key, input], index) => {
                 const socket = input.socket;
                 return React.createElement('div', {
                     key: `input-${key}`,
-                    style: { display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }
+                    style: collapsed 
+                        ? { 
+                            // Collapsed: stack all sockets at same position
+                            position: index === 0 ? 'relative' : 'absolute',
+                            top: 0,
+                            left: 0,
+                            display: 'flex', 
+                            alignItems: 'center'
+                        }
+                        : { display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }
                 }, [
                     React.createElement(window.RefComponent, {
                         key: 'ref',
                         init: (ref) => emit({ type: 'render', data: { type: 'socket', side: 'input', key, nodeId: data.id, element: ref, payload: socket } }),
                         unmount: (ref) => emit({ type: 'unmount', data: { element: ref } })
                     }),
-                    React.createElement('span', { key: 'label', style: { fontSize: '12px', color: '#c5cdd3' } }, input.label || key)
+                    // Only show label when expanded
+                    !collapsed && React.createElement('span', { key: 'label', style: { fontSize: '12px', color: '#c5cdd3' } }, input.label || key)
                 ]);
             });
         };
 
-        const renderOutputs = () => {
-            return Object.entries(data.outputs || {}).map(([key, output]) => {
+        const renderOutputs = (collapsed = false) => {
+            return Object.entries(data.outputs || {}).map(([key, output], index) => {
                 const socket = output.socket;
                 return React.createElement('div', {
                     key: `output-${key}`,
-                    style: { display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'flex-end', marginBottom: '4px' }
+                    style: collapsed
+                        ? {
+                            // Collapsed: stack all sockets at same position
+                            position: index === 0 ? 'relative' : 'absolute',
+                            top: 0,
+                            right: 0,
+                            display: 'flex',
+                            alignItems: 'center'
+                        }
+                        : { display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'flex-end', marginBottom: '4px' }
                 }, [
-                    React.createElement('span', { key: 'label', style: { fontSize: '12px', color: '#c5cdd3' } }, output.label || key),
+                    // Only show label when expanded
+                    !collapsed && React.createElement('span', { key: 'label', style: { fontSize: '12px', color: '#c5cdd3' } }, output.label || key),
                     React.createElement(window.RefComponent, {
                         key: 'ref',
                         init: (ref) => emit({ type: 'render', data: { type: 'socket', side: 'output', key, nodeId: data.id, element: ref, payload: socket } }),
@@ -2532,6 +2610,8 @@
                         const newVal = !showIOSection;
                         setShowIOSection(newVal);
                         data.properties.showIOSection = newVal;
+                        // Tell Rete to recalculate connection positions after React re-renders
+                        setTimeout(() => window.T2Controls?.updateNodeLayout?.(data.id), 50);
                     },
                     onPointerDown: (e) => e.stopPropagation(),
                     style: { ...sectionHeaderStyle, padding: '6px 8px', background: '#16213e' }
@@ -2541,12 +2621,37 @@
                     ),
                     React.createElement('span', { key: 'arrow', style: { fontSize: '10px' } }, showIOSection ? '▼' : '▶')
                 ]),
-                showIOSection && React.createElement('div', { 
+                // ALWAYS render sockets - when collapsed, stack them at single point for wire bundling
+                // This keeps socket DOM elements in place so Rete can track connections
+                React.createElement('div', { 
                     key: 'io-content', 
-                    style: { padding: '8px', display: 'flex', justifyContent: 'space-between' } 
+                    style: { 
+                        padding: showIOSection ? '8px' : '4px 8px', 
+                        display: 'flex', 
+                        justifyContent: 'space-between',
+                        transition: 'padding 0.15s ease-out'
+                    } 
                 }, [
-                    React.createElement('div', { key: 'inputs', style: { display: 'flex', flexDirection: 'column' } }, renderInputs()),
-                    React.createElement('div', { key: 'outputs', style: { display: 'flex', flexDirection: 'column' } }, renderOutputs())
+                    // Inputs container - when collapsed, use relative positioning for stacking
+                    React.createElement('div', { 
+                        key: 'inputs', 
+                        style: { 
+                            display: 'flex', 
+                            flexDirection: 'column',
+                            position: 'relative',
+                            minHeight: showIOSection ? 'auto' : '12px'
+                        } 
+                    }, renderInputs(!showIOSection)),
+                    // Outputs container - when collapsed, use relative positioning for stacking
+                    React.createElement('div', { 
+                        key: 'outputs', 
+                        style: { 
+                            display: 'flex', 
+                            flexDirection: 'column',
+                            position: 'relative',
+                            minHeight: showIOSection ? 'auto' : '12px'
+                        } 
+                    }, renderOutputs(!showIOSection))
                 ])
             ]),
 
@@ -2558,6 +2663,8 @@
                         const newVal = !showSpeakersSection;
                         setShowSpeakersSection(newVal);
                         data.properties.showSpeakersSection = newVal;
+                        // Tell Rete to recalculate connection positions after React re-renders
+                        setTimeout(() => window.T2Controls?.updateNodeLayout?.(data.id), 50);
                     },
                     onPointerDown: (e) => e.stopPropagation(),
                     style: { ...sectionHeaderStyle, padding: '6px 8px', background: '#16213e' }
@@ -2665,6 +2772,8 @@
                         const newVal = !showStreamSection;
                         setShowStreamSection(newVal);
                         data.properties.showStreamSection = newVal;
+                        // Tell Rete to recalculate connection positions after React re-renders
+                        setTimeout(() => window.T2Controls?.updateNodeLayout?.(data.id), 50);
                     },
                     onPointerDown: (e) => e.stopPropagation(),
                     style: { ...sectionHeaderStyle, padding: '6px 8px', background: '#16213e' }
@@ -3124,6 +3233,8 @@
                         const newVal = !showTTSSection;
                         setShowTTSSection(newVal);
                         data.properties.showTTSSection = newVal;
+                        // Tell Rete to recalculate connection positions after React re-renders
+                        setTimeout(() => window.T2Controls?.updateNodeLayout?.(data.id), 50);
                     },
                     onPointerDown: (e) => e.stopPropagation(),
                     style: { ...sectionHeaderStyle, padding: '6px 8px', background: '#16213e' }

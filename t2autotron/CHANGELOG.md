@@ -1,3 +1,13 @@
+## [2.1.245] - 2026-09-15
+### Fixed
+- **HA Generic external override handling**: manual ON/OFF changes made in Home Assistant are now respected when Enforce State is disabled.
+- HA Generic command delivery now tracks desired, observed, pending, confirmed, retrying, and failed states across frontend/backend handoff.
+- Fresh HA confirmation, bounded retries, stale-command protection, and request timeouts prevent old graph intent from restoring devices after manual changes.
+- Backend takeover and graph reload now preserve current HA state and avoid replaying one-shot triggers.
+
+### Changed
+- Added regression coverage and shared command-contract documentation for frontend and backend HA Generic behavior.
+
 ## [2.1.244] - 2026-09-06
 ### Changed
 - Rollback release to the previous 2.1.242 implementation for troubleshooting.
