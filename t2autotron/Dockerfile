@@ -34,8 +34,8 @@ WORKDIR /app
 COPY --from=builder /build/v3_migration/backend ./backend/
 
 # Shared calculation logic is required by backend engine and device managers.
-# These modules live beside v3_migration in the source repository.
-COPY --from=builder /build/shared ./shared/
+# These modules live under v3_migration in the source repository.
+COPY --from=builder /build/v3_migration/shared ./shared/
 
 # Copy built frontend to backend's static folder
 COPY --from=builder /build/v3_migration/frontend/dist ./backend/frontend/
@@ -52,6 +52,6 @@ LABEL \
     io.hass.name="T2AutoTron" \
     io.hass.description="Visual node-based smart home automation editor" \
     io.hass.type="addon" \
-    io.hass.version="2.1.247"
+    io.hass.version="2.1.248"
 
 CMD ["/run.sh"]

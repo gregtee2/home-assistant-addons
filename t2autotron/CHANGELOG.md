@@ -1,3 +1,7 @@
+## [2.1.248] - 2026-09-15
+### Fixed
+- Correct the Docker shared-logic source path. The previous image copied `/build/shared`, but the root repository stores shared logic under `/build/v3_migration/shared`, causing `DeviceLogic` module startup failures.
+
 ## [2.1.247] - 2026-09-15
 ### Fixed
 - Include the shared logic directory in the container image. This fixes startup failure with `Cannot find module '../../../shared/logic/DeviceLogic'` and restores the Home Assistant ingress UI.
