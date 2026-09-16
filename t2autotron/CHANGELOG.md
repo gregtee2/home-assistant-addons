@@ -1,3 +1,8 @@
+## [2.1.250] - 2026-09-16
+### Fixed
+- HSV Modifier now passes its input color through unchanged when disabled by its checkbox, Enable input, or Enable Buffer.
+- HA Device State Output now exposes a Boolean `Open / On` output for trigger and Enable connections. Garage door states map Open to true and Closed to false.
+
 ## [2.1.249] - 2026-09-16
 ### Fixed
 - Fix HA ingress shared-logic loading so HA Generic trigger commands work in the add-on UI. The loader now uses the ingress-aware API URL instead of a root-relative path.
