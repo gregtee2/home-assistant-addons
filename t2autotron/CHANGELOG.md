@@ -1,3 +1,7 @@
+## [2.1.249] - 2026-09-16
+### Fixed
+- Fix HA ingress shared-logic loading so HA Generic trigger commands work in the add-on UI. The loader now uses the ingress-aware API URL instead of a root-relative path.
+
 ## [2.1.248] - 2026-09-15
 ### Fixed
 - Correct the Docker shared-logic source path. The previous image copied `/build/shared`, but the root repository stores shared logic under `/build/v3_migration/shared`, causing `DeviceLogic` module startup failures.
