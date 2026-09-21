@@ -1,3 +1,7 @@
+## [2.1.251] - 2026-09-21
+### Fixed
+- Event Log now preserves backend command correlation, so scheduled T2AutoTron device changes are shown as app-triggered instead of External.
+
 ## [2.1.250] - 2026-09-16
 ### Fixed
 - HSV Modifier now passes its input color through unchanged when disabled by its checkbox, Enable input, or Enable Buffer.
