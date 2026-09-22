@@ -1,3 +1,8 @@
+## [2.1.252] - 2026-09-21
+### Fixed
+- Event Log now hides raw sensor readings and technical binary-sensor updates such as power consumption, cloud connectivity, battery, and problem status.
+- Immediate Home Assistant API command echoes now carry their T2AutoTron source, preventing them from being labeled External before the correlated HA update arrives.
+
 ## [2.1.251] - 2026-09-21
 ### Fixed
 - Event Log now preserves backend command correlation, so scheduled T2AutoTron device changes are shown as app-triggered instead of External.
