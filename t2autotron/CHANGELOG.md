@@ -1,3 +1,7 @@
+## [2.1.257] - 2026-09-21
+### Fixed
+- Event Log group navigation now reliably restores all Backdrop group tiles after loading a graph instead of intermittently showing only All.
+
 ## [2.1.256] - 2026-09-21
 ### Added
 - Automation Trace filters for All, Completed, Waiting, and Observed command stories.
