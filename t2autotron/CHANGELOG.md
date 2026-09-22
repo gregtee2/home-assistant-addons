@@ -1,3 +1,8 @@
+## [2.1.253] - 2026-09-21
+### Added
+- Node Inspector: click a node to review its current saved configuration without opening or expanding the node.
+- Command Trail: recent backend commands and confirmations are shown beside the Event Log, with source-node navigation when available.
+
 ## [2.1.252] - 2026-09-21
 ### Fixed
 - Event Log now hides raw sensor readings and technical binary-sensor updates such as power consumption, cloud connectivity, battery, and problem status.
