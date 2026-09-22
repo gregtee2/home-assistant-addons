@@ -1,3 +1,7 @@
+## [2.1.256] - 2026-09-21
+### Added
+- Automation Trace filters for All, Completed, Waiting, and Observed command stories.
+
 ## [2.1.255] - 2026-09-21
 ### Fixed
 - Automation Trace now identifies commands sent directly from the user interface as Manual control instead of offering a non-working graph-node jump.
