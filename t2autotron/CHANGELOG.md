@@ -1,3 +1,9 @@
+## [2.1.260] - 2026-09-22
+### Changed
+- Removed the redundant Selected Node inspector now that Trace Map and Graph Health provide the useful navigation and diagnosis views.
+- Moved Graph Health beside Trace Map and Show All in the editor toolbar.
+- Graph Health now highlights affected nodes with a prominent red outline when focusing a warning.
+
 ## [2.1.259] - 2026-09-21
 ### Fixed
 - Trace Map now follows only upstream data flow into the selected node, avoiding unrelated downstream branches and wireless fan-out.
