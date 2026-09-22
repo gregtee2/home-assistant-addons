@@ -1,3 +1,7 @@
+## [2.1.255] - 2026-09-21
+### Fixed
+- Automation Trace now identifies commands sent directly from the user interface as Manual control instead of offering a non-working graph-node jump.
+
 ## [2.1.254] - 2026-09-21
 ### Changed
 - Command Trail is now an Automation Trace that groups each verified command as source node, device command, and Home Assistant confirmation.
