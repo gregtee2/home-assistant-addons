@@ -1,3 +1,7 @@
+## [2.1.258] - 2026-09-21
+### Added
+- Trace Map controls to zoom to a selected node's connected path or the full graph, with temporary dashed links for matching Sender/Receiver wireless channels.
+
 ## [2.1.257] - 2026-09-21
 ### Fixed
 - Event Log group navigation now reliably restores all Backdrop group tiles after loading a graph instead of intermittently showing only All.
