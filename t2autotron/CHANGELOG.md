@@ -1,3 +1,8 @@
+## [2.1.254] - 2026-09-21
+### Changed
+- Command Trail is now an Automation Trace that groups each verified command as source node, device command, and Home Assistant confirmation.
+- Unrelated Home Assistant changes are displayed separately as observed state updates, so they are not mistaken for T2 commands.
+
 ## [2.1.253] - 2026-09-21
 ### Added
 - Node Inspector: click a node to review its current saved configuration without opening or expanding the node.
