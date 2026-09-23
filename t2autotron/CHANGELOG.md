@@ -1,3 +1,13 @@
+## [2.1.261] - 2026-09-22
+### Fixed
+- HSV Control now passes through its connected HSV input, while preserving Scene HSV priority and slider fallback.
+- Corrected All-in-One Color temperature/tint controls so RGB colors round-trip consistently.
+- Forecast temperatures now show Celsius alongside Fahrenheit, including Home Assistant sensors configured in Celsius.
+
+### Changed
+- Refined the All-in-One Color controls and output preview without changing the HSV device-output contract.
+- Improved Automation Trace readability for command targets and device confirmations.
+
 ## [2.1.260] - 2026-09-22
 ### Changed
 - Removed the redundant Selected Node inspector now that Trace Map and Graph Health provide the useful navigation and diagnosis views.
